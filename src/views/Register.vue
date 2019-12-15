@@ -1,36 +1,29 @@
 <template>
   <div class="register">
-    <h1>注册</h1>
+    <van-nav-bar
+      title="注册"
+      left-text="返回"
+      left-arrow
+      @click-left="()=>{this.$router.push('/login')}"
+    />
     <van-cell-group>
-      <van-field v-model="account" placeholder="请输入账号" label="账号" left-icon="contact" required />
+      <van-field v-model="account" placeholder="请输入账号" left-icon="contact" required />
     </van-cell-group>
     <br />
     <van-cell-group>
-      <van-field
-        v-model="password"
-        type="password"
-        label="密码"
-        placeholder="请输入密码"
-        left-icon="eye-o"
-        required
-      />
+      <van-field v-model="password" type="password" placeholder="请输入密码" left-icon="eye-o" required />
     </van-cell-group>
     <br />
     <van-cell-group>
-      <van-field v-model="name" label="昵称" placeholder="请输入昵称" left-icon="label-o" required />
+      <van-field v-model="name" placeholder="请输入昵称" left-icon="label-o" required />
     </van-cell-group>
     <br />
     <br />
     <br />
-    <br />
-    <van-row type="flex" justify="center">
-      <van-button icon="arrow-left" round type="info" size="normal" @click="back()">返回</van-button>
-      <van-button icon="arrow" round type="info" size="normal" @click="register()">注册</van-button>
-    </van-row>
+
+    <van-button icon="arrow" type="info" @click="register()" style="width:96%">注册</van-button>
   </div>
 </template>
-
-
 
 <script>
 export default {
@@ -50,7 +43,7 @@ export default {
       });
     },
     back() {
-      this.$notify({ type: "success", message: "返回登陆页面" });
+      this.$router.push("/login");
     }
   }
 };
@@ -58,7 +51,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.register {
-  margin-top: 80px;
-}
 </style>
