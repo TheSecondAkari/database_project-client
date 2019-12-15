@@ -4073,7 +4073,7 @@ export default {
           city:"杭州市",
           county:"西湖区",
           areaCode:"330106",
-          addressDetail: "文三路 138号东方通信大厦 7 楼 501 室"
+          addressDetail: "文三路 138号东方通信大厦 7 楼 501 室",
         },
         {
           id: "2",

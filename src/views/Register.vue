@@ -36,11 +36,19 @@ export default {
     };
   },
   methods: {
-    register() {
-      this.$notify({
-        type: "success",
-        message: this.account + this.password + this.name
+    async register() {
+      let res = await this.api.post("/register", {
+        username: this.account,
+        password: this.password,
+        name: this.name
       });
+      if (res.status >= 200 && res.status < 300) {
+          this.$notify({
+              type: 'success',
+              message: res.data.errmsg
+          });
+          this.$router.push("/login");
+      }
     },
     back() {
       this.$router.push("/login");

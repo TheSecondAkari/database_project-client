@@ -6,7 +6,6 @@ const routers = [
         },
         component: (resolve) => require(['../views/AddressList.vue'], resolve),
     },
-
     {
         path: '/login',
         meta: {
