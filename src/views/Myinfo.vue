@@ -5,9 +5,24 @@
         <van-col span="5" style="margin-left:8px;">
           <van-image round width="4rem" height="4rem" src="../assets/hime.jpg" />
         </van-col>
-        <van-col span="8">
-          <van-icon name="edit" size="1.5em" color="blue" style="float:right;margin-top:18.72px" />
-          <h3>{{name}}</h3>
+        <van-col span="8" v-if="modify">
+          <div>
+            <van-icon
+              name="edit"
+              size="1.5em"
+              color="blue"
+              style="float:right;"
+              v-on:click="edit"
+            />
+            <h3>{{name}}</h3>
+          </div>
+        </van-col>
+        <van-col span="15" v-else>
+          <div style="75px;">
+            <van-field v-model="name" center clearable>
+              <van-button slot="button" size="small" @click="modifyName">确认</van-button>
+            </van-field>
+          </div>
         </van-col>
       </van-row>
     </div>
@@ -26,10 +41,17 @@
       <van-row type="flex" justify="space-between">
         <van-col span="8">我的商品</van-col>
       </van-row>
-      <van-cell value="我发布的" icon="goods-collect-o" size="large" is-link  />
+      <van-cell value="我发布的" icon="goods-collect-o" size="large" is-link />
       <van-cell value="我卖出的" icon="after-sale" size="large" is-link />
     </div>
     <van-cell value="地址管理" icon="records" size="large" is-link to="/addressList" />
+    <van-collapse v-model="activeNames">
+      <van-collapse-item title="修改密码" name="1">
+        <van-field type="password" label="原始密码" placeholder="请输入原始密码" error-message="原始密码错误" />
+        <van-field type="password" label="新密码" placeholder="请输入新密码" />
+        <van-field type="password" label="确认密码" placeholder="请输入手机号" error-message="两次密码不同" />
+      </van-collapse-item>
+    </van-collapse>
     <br />
     <van-button
       v-if="judge"
@@ -58,13 +80,28 @@ export default {
   name: "Myinfo",
   data() {
     return {
+      modify: true,
       active_tag: 2,
       judge: true,
-      name: "小明传器"
+      name: "小明传器",
+      activeNames: ["1"]
     };
   },
   mounted: {},
-  methods: {}
+  methods: {
+    edit: function() {
+      this.modify = false;
+    },
+    async modifyName(){
+      var that = this
+      let data = await this.api.put('/user', {
+        name: that.name
+      })
+      console.log(data)
+      // this.$store.getter
+      this.modify = true
+    }
+  }
 };
 </script>
 
