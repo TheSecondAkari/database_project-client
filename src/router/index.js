@@ -4,9 +4,8 @@ const routers = [
         meta: {
             title: '主页面'
         },
-        component: (resolve) => require(['../views/AddressList.vue'], resolve),
+        component: (resolve) => require(['../views/Home.vue'], resolve),
     },
-
     {
         path: '/login',
         meta: {
@@ -49,6 +48,19 @@ const routers = [
         },
         component: (resolve) => require(['../views/Mysold.vue'], resolve),
     },
-
+    {
+        path: '/notsent',
+        meta: {
+            title: '未发货'
+        },
+        component: (resolve) => require(['../views/Notsent.vue'], resolve),
+    },
+    {
+        path: '/good',
+        meta: {
+            title: '商品详情'
+        },
+        component: (resolve) => require(['../views/Good.vue'], resolve),
+    }
 ];
 export default routers;
