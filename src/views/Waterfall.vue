@@ -8,7 +8,7 @@
   >
     <div class="container" ref="content">
       <div class="col">
-        <div class="card" v-for="item in imgsList1" :key="item.id" v-on:click="test($event)" :id="item.id">
+        <div class="card" v-for="item in imgsList1" :key="item.id" v-on:click="reDirect($event)" :id="item.id">
           <van-image src="https://img.yzcdn.cn/vant/cat.jpeg" style="width: 100%; display: block" />
           <div class="detail">
             <div class="title">{{item.name}}</div>
@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="col">
-        <div class="card" v-for="item in imgsList2" :key="item.id">
+        <div class="card" v-for="item in imgsList2" :key="item.id" v-on:click="reDirect($event)" :id="item.id">
           <van-image src="https://img.yzcdn.cn/vant/cat.jpeg" style="width: 100%; display: block" />
           <div class="detail">
             <div class="title">{{item.name}}</div>
@@ -84,8 +84,9 @@ export default {
       this.imgsList2 = this.imgsList2.concat(imgsList2);
       this.index = this.index + 1;
     },
-    test: function(e){
-      console.log(e.currentTarget.id)
+    reDirect: function(e){
+      console.log(e.currentTarget.id);
+      this.$router.push('/good');
     }
   }
 };

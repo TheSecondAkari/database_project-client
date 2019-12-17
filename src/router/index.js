@@ -33,6 +33,13 @@ const routers = [
             title: '地址管理'
         },
         component: (resolve) => require(['../views/AddressList.vue'], resolve),
+    },
+    {
+        path: '/good',
+        meta:{
+            title: '商品详情'
+        },
+        component: (resolve) => require(['../views/Good.vue'], resolve),
     }
 ];
 export default routers;

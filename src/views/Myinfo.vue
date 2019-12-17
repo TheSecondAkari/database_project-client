@@ -2,7 +2,7 @@
   <div class="myinfo">
     <div class="header">
       <van-row type="flex">
-        <van-col span="4" style="margin-left:8px;">
+        <van-col span="5" style="margin-left:8px;">
           <van-image round width="4rem" height="4rem" src="../assets/hime.jpg" />
         </van-col>
         <van-col span="8">

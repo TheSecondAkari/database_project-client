@@ -6,13 +6,13 @@
     <van-tabs v-model="active_type" swipeable>
       <van-tab v-for="index in 6" :title="'选项 ' + index" :key="index"></van-tab>
     </van-tabs>
-    <div class="test-swiper">
+    <div class="image-swiper">
       <van-swipe
         :autoplay="3000"
         indicator-color="white"
         style="border-radius: 15px; overflow: hidden;"
       >
-        <van-swipe-item class="test" v-for="item in list" :key="item">{{item}}</van-swipe-item>
+        <van-swipe-item class="image" v-for="item in list" :key="item">{{item}}</van-swipe-item>
       </van-swipe>
     </div>
     <waterfall :imgsArr="mainMenuList"/>
@@ -104,35 +104,18 @@ export default {
       ],
     };
   },
+  mounted: function(){
+    // this.getGood();
+  },
   methods: {
+    // async getGood() {
+    //   let data = await this.api.get('/my_goods')
+    //   console.log(data)
+    // },
     onSearch: function() {
       this.$notify(this.value + "!!!!!!!!!");
       this.value = "";
     },
-    mountMenu(arg) {
-      var temp = this.mainMenuList;
-      var index = arg || 0;
-      var refName = this.selectCol();
-      if (temp.length > index) {
-        this[refName].push(this.mainMenuList[index]);
-        this.$nextTick(() => {
-          this.mountMenu(index + 1);
-        });
-      }
-    },
-    selectCol() {
-      var getHeight = ref => {
-        return this.$refs[ref].offsetHeight;
-      };
-      var height1 = getHeight("col1");
-      var height2 = getHeight("col2");
-      switch (Math.min(height1, height2)) {
-        case height1:
-          return "dataList1";
-        case height2:
-          return "dataList2";
-      }
-    }
   },
   components: {
     waterfall
@@ -141,12 +124,12 @@ export default {
 </script>
 
 <style>
-.test-swiper {
+.image-swiper {
   margin-top: 15px;
   height: 150px;
   padding: 0% 3%;
 }
-.test {
+.image {
   text-align: center;
   line-height: 150px;
   background: blanchedalmond;
