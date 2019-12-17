@@ -3,7 +3,7 @@
     <!-- 第一栏：用户头像，昵称，修改按钮:跳转修改昵称或者密码 -->
     <div class="header">
       <van-row type="flex">
-        <van-col span="4" style="margin-left:8px;">
+        <van-col span="5" style="margin-left:8px;">
           <van-image round width="4rem" height="4rem" src="../assets/hime.jpg" />
         </van-col>
         <van-col span="9">
@@ -65,6 +65,11 @@
       style="width:90%;margin:5px"
       @click="()=>{this.$router.push('/login')}"
     >登陆</van-button>
+    <van-tabbar v-model="active_tag" style="position: fixed; bottom: 0px;">
+      <van-tabbar-item icon="home-o" to="/">主页</van-tabbar-item>
+      <van-tabbar-item icon="cart-o">购物车</van-tabbar-item>
+      <van-tabbar-item icon="user-o" to="/myinfo">我的</van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 
