@@ -35,6 +35,13 @@ const routers = [
         component: (resolve) => require(['../views/AddressList.vue'], resolve),
     },
     {
+        path: '/notsent',
+        meta: {
+            title: '未发货'
+        },
+        component: (resolve) => require(['../views/Notsent.vue'], resolve),
+    },
+    {
         path: '/good',
         meta:{
             title: '商品详情'

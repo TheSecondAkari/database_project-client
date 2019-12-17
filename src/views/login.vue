@@ -47,6 +47,8 @@ export default {
                 type: 'success',
                 message: "登陆成功"
             });
+            this.$store.commit("getMyInfo");
+            this.$store.commit("getAddresses"); 
             this.$router.push('/');
         }
     },

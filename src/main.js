@@ -5,7 +5,7 @@ import Vant from 'vant';
 import 'vant/lib/index.css';
 import Routers from './router/index.js'
 import axios from 'axios';
-
+import store from './store/index.js'
 
 Vue.use(Vant);
 Vue.use(VueRouter);
@@ -108,12 +108,34 @@ const api = {
         } catch (err) {
             console.log(err);
         }
+    },
+    async delete(url, data = {}, options = {}) {
+        try {
+            let res = await request.delete(url, {
+                params: data,
+                headers: {
+                    Authorization: sessionStorage.getItem('Authorization'),
+                    ...options
+                }
+            });
+            return new Promise((resolve, reject) => {
+                if (res.status >= 200 && res.status < 300) {
+                    resolve(res);
+                } else {
+                    reject(res);
+                }
+            })
+        } catch (err) {
+            console.log(err);
+        }
     }
 }
 
 Vue.prototype.api = api;
-
 new Vue({
     render: h => h(App),
     router,
+    store
 }).$mount('#app')
+
+export default api;
