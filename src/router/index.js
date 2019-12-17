@@ -4,7 +4,7 @@ const routers = [
         meta: {
             title: '主页面'
         },
-        component: (resolve) => require(['../views/AddressList.vue'], resolve),
+        component: (resolve) => require(['../views/Myinfo.vue'], resolve),
     },
     {
         path: '/login',
@@ -33,6 +33,13 @@ const routers = [
             title: '地址管理'
         },
         component: (resolve) => require(['../views/AddressList.vue'], resolve),
+    },
+    {
+        path: '/notsent',
+        meta: {
+            title: '地址管理'
+        },
+        component: (resolve) => require(['../views/Notsent.vue'], resolve),
     },
 ];
 export default routers;

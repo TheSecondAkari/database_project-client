@@ -1,18 +1,24 @@
 <template>
   <div class="addressList">
     <van-nav-bar title="地址管理" left-text="返回" left-arrow @click-left="onClickLeft" />
-    <van-address-list v-model="chosenAddressId" :list="list" @add="onAdd" @edit="onEdit" />
-    <van-popup v-model="show" position="bottom" closeable :style="{ height: '60%' }">
+    <van-address-list v-model="chosenAddressId" :list="addresslist" @add="onAdd" @edit="onEdit" />
+    <van-popup v-model="addshow" position="bottom" closeable :style="{ height: '50%' }">
       <h3>地址信息</h3>
+      <van-address-edit
+        :area-list="areaList"
+        :area-columns-placeholder="['请选择', '请选择', '请选择']"
+        @save="onApply"
+      />
+    </van-popup>
+    <van-popup v-model="editshow" position="bottom" closeable :style="{ height: '60%' }">
+      <h3>编辑信息</h3>
       <van-address-edit
         :area-list="areaList"
         show-delete
         :address-info="oldItem"
-        :search-result="searchResult"
         :area-columns-placeholder="['请选择', '请选择', '请选择']"
         @save="onSave"
         @delete="onDelete"
-        @change-detail="onChangeDetail"
       />
     </van-popup>
   </div>
@@ -21,7 +27,10 @@
 export default {
   data() {
     return {
-      show: false,
+      oldItem: {}, //用于地址修改时的，传原始值
+      addshow: false, // 用于控制弹出层的值Boolean
+      editshow: false,
+      //   地址选择列表，areaCode：地址   String
       areaList: {
         province_list: {
           110000: "北京市",
@@ -4062,46 +4071,74 @@ export default {
           820201: "离岛"
         }
       },
-      searchResult: [],
-      chosenAddressId: "1",
-      list: [
-        {
-          id: "1",
-          name: "张三",
-          tel: "13000000000",
-          province:"浙江省", 
-          city:"杭州市",
-          county:"西湖区",
-          areaCode:"330106",
-          addressDetail: "文三路 138号东方通信大厦 7 楼 501 室",
-        },
-        {
-          id: "2",
-          name: "李四",
-          tel: "1310000000",
-          address: "浙江省杭州市拱墅区莫干山路 50 号"
-        },
-        {
-          id: "3",
-          name: "王五",
-          tel: "1320000000",
-          address: "浙江省杭州市滨江区江南大道 15 号"
-        }
-      ]
+      chosenAddressId: "1" //初始页面默认选中第一个地址
     };
   },
-
+  computed: {
+    addresslist() {
+      return this.$store.getters.AddressList;
+    }
+  },
   methods: {
     onClickLeft() {
       this.$router.push("/myinfo");
     },
     onAdd() {
-      this.show = true;
+      this.addshow = true; //弹出层控制
     },
-    
-    onEdit(item) {
-        this.show = true;
-        this.oldItem = item;
+    onEdit(item, index) {
+      this.editshow = true;
+      this.oldItem = item;
+      this.chosenAddressId = index;
+    },
+    async onApply(Info) {
+      let data = await this.api.post("/address", {
+        name: Info.name,
+        phone: Info.tel,
+        province: Info.province,
+        city: Info.city,
+        county: Info.county,
+        detail: Info.addressDetail,
+        code: Info.areaCode
+      });
+      if (data.status >= 200 && data.status < 300) {
+        this.$notify({
+          type: "success",
+          message: data.data.errmsg
+        });
+        this.$store.commit("getAddresses");
+      }
+      this.addshow = false;
+    },
+    async onSave(Info) {
+      let data = await this.api.put("/address/" + Info.id, {
+        name: Info.name,
+        phone: Info.tel,
+        province: Info.province,
+        city: Info.city,
+        county: Info.county,
+        detail: Info.addressDetail,
+        code: Info.areaCode
+      });
+      if (data.status >= 200 && data.status < 300) {
+        this.$notify({
+          type: "success",
+          message: data.data.errmsg
+        });
+        this.$store.commit("getAddresses");
+      }
+      this.editshow = false;
+    },
+    async onDelete(Info) {
+      let data = await this.api.delete("/address/" + Info.id)
+      if (data.status >= 200 && data.status < 300) {
+        this.$notify({
+          type: "success",
+          message: data.data.errmsg
+        });
+        this.$store.commit("getAddresses");
+      }
+      this.editshow = false;
     }
   }
 };

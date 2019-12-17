@@ -1,36 +1,56 @@
 <template>
   <div class="myinfo">
+    <!-- 第一栏：用户头像，昵称，修改按钮:跳转修改昵称或者密码 -->
     <div class="header">
       <van-row type="flex">
         <van-col span="4" style="margin-left:8px;">
           <van-image round width="4rem" height="4rem" src="../assets/hime.jpg" />
         </van-col>
-        <van-col span="8">
-          <van-icon name="edit" size="1.5em" color="blue" style="float:right;margin-top:18.72px" />
-          <h3>{{name}}</h3>
+        <van-col span="9">
+          <van-icon
+            name="edit"
+            size="1.5em"
+            color="gray"
+            @click="goto_editMess()"
+            style="float:right;margin-top:18.72px"
+          />
+          <h3>{{username}}</h3>
         </van-col>
       </van-row>
     </div>
+
+    <!-- 用户的订单情况，购买的商品状态 -->
     <div class="orders">
       <van-row type="flex" justify="space-between">
         <van-col span="8">我的订单</van-col>
-        <van-col span="8" style="color:gray">查看全部订单></van-col>
+        <van-col span="8" style="color:gray;margin-right:10px;">查看全部订单></van-col>
       </van-row>
-      <van-grid :column-num="3">
+      <van-grid class="order-icon-color" :column-num="3">
         <van-grid-item icon="send-gift-o" text="代发货" />
         <van-grid-item icon="logistics" text="待收货" />
         <van-grid-item icon="comment-o" text="评价" />
       </van-grid>
     </div>
+
+    <!-- 用户自己上传发布的商品 -->
     <div class="goods">
       <van-row type="flex" justify="space-between">
         <van-col span="8">我的商品</van-col>
       </van-row>
-      <van-cell value="我发布的" icon="goods-collect-o" size="large" is-link />
-      <van-cell value="我卖出的" icon="after-sale" size="large" is-link />
+      <van-cell class="goods-icon-color" value="我发布的" icon="goods-collect-o" size="large" is-link />
+      <van-cell class="goods-icon-color" value="我卖出的" icon="after-sale" size="large" is-link />
     </div>
-    <van-cell value="地址管理" icon="records" size="large" is-link to="/addressList" />
+    <van-cell
+      class="address-icon-color"
+      value="地址管理"
+      icon="records"
+      size="large"
+      is-link
+      to="/addressList"
+    />
     <br />
+
+    <!-- 根据是否登陆，显示登陆按钮或者登出按钮 -->
     <van-button
       v-if="judge"
       type="danger"
@@ -53,16 +73,29 @@ export default {
   name: "Myinfo",
   data() {
     return {
-      judge: true,
-      name: "小明传器"
+      judge: true
     };
   },
-  mounted: {},
+  mounted() {},
+  computed: {
+    username() {
+      return this.$store.getters.UserName;
+    }
+  },
   methods: {}
 };
 </script>
 
 <style scoped>
+.order-icon-color {
+  color: orange;
+}
+.goods-icon-color {
+  color: greenyellow;
+}
+.address-icon-color {
+  color: #186be7;
+}
 .header {
   margin-top: 13px;
 }
