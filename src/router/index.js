@@ -49,6 +49,13 @@ const routers = [
         component: (resolve) => require(['../views/Mysold.vue'], resolve),
     },
     {
+        path: '/seller',
+        meta: {
+            title: '商家'
+        },
+        component: (resolve) => require(['../views/Seller.vue'], resolve),
+    },
+    {
         path: '/notsent',
         meta: {
             title: '未发货'
