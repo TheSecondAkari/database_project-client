@@ -15,10 +15,10 @@
         <van-swipe-item class="image" v-for="item in list" :key="item">{{item}}</van-swipe-item>
       </van-swipe>
     </div>
-    <waterfall :imgsArr="mainMenuList"/>
+    <waterfall :imgsArr="mainMenuList" v-if="mainMenuList.length > 0"/>
     <van-tabbar v-model="active_tag" style="position: fixed; bottom: 0px;">
       <van-tabbar-item icon="home-o" to="/">主页</van-tabbar-item>
-      <van-tabbar-item icon="cart-o">购物车</van-tabbar-item>
+      <van-tabbar-item icon="cart-o" to="/cart">购物车</van-tabbar-item>
       <van-tabbar-item icon="user-o" to="/myinfo">我的</van-tabbar-item>
     </van-tabbar>
   </div>
@@ -34,86 +34,19 @@ export default {
       active_type: 0,
       active_tag: 0,
       list: [1, 2, 3, 4],
-      mainMenuList: [
-        {
-          id: 1,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-        {
-          id: 2,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-        {
-          id: 3,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-        {
-          id: 4,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-        {
-          id: 5,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-        {
-          id: 6,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-        {
-          id: 7,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-        {
-          id: 8,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-        {
-          id: 9,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-        {
-          id: 10,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-        {
-          id: 11,
-          name: "一只猫",
-          price: 35,
-          view: 100,
-        },
-      ],
+      mainMenuList: [],
     };
   },
   mounted: function(){
-    // this.getGood();
+    this.getGood();
   },
   methods: {
-    // async getGood() {
-    //   let data = await this.api.get('/my_goods')
-    //   console.log(data)
-    // },
+    async getGood() {
+      let data = await this.api.get('/goods/index');
+      this.mainMenuList = data.data;
+      console.log(this.mainMenuList);
+    },
     onSearch: function() {
-      this.$notify(this.value + "!!!!!!!!!");
       this.value = "";
     },
   },

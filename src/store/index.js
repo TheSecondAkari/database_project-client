@@ -10,9 +10,9 @@ const store = new Vuex.Store({
             id: 0,
             name: "未登录",
             username: "",
-            password: "",
         },
-        addressList: []
+        addressList: [],
+        cartList: [],
     },
     getters: {
         UserName: state => {
@@ -21,8 +21,8 @@ const store = new Vuex.Store({
         AddressList: state => {
             return state.addressList;
         },
-        Password: state => {
-            return state.password;
+        CartList: state => {
+            return state.cartList;
         },
     },
     mutations: {

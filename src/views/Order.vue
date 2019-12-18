@@ -15,17 +15,16 @@
       </van-panel>
     </div>
     <van-list style="padding-bottom:18%;">
-      <van-list class="order-css" v-for="item in list" :key="item.orderid">
+      <van-list class="order-css" v-for="item in list" :key="item.userid">
         <div class="shop">
           <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
           <div style="width:70%">
             <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
-            <!-- <div class="info">我卢本伟真TM没开挂！不信你们可以随便石锤我</div> -->
           </div>
         </div>
         <van-card
           class="card"
-          v-for="good in item.orders"
+          v-for="good in item.goods"
           :key="good.id"
           :num="good.num"
           :price="good.price"
@@ -36,7 +35,7 @@
       </van-list>
     </van-list>
     <div>
-      <van-submit-bar :price="3500" button-text="提交订单" />
+      <van-submit-bar :price="price" button-text="提交订单" />
     </div>
   </div>
 </template>
@@ -48,13 +47,8 @@ export default {
       index: undefined,
       list: [
         {
-          orderid: 1,
-          address_id: {
-            name: "一号机",
-            phone: "12345678955",
-            address: "北京市，西街，32号502"
-          },
-          orders: [
+          userid: 1,
+          goods: [
             {
               id: 23,
               num: "1",
@@ -74,13 +68,8 @@ export default {
           ]
         },
         {
-          orderid: 55,
-          address_id: {
-            name: "er号机",
-            phone: "12345678956",
-            address: "上海市，西街，32号502"
-          },
-          orders: [
+          userid: 55,
+          goods: [
             {
               id: 83,
               num: "1",
@@ -92,13 +81,8 @@ export default {
           ]
         },
         {
-          orderid: 11,
-          address_id: {
-            name: "嘿机",
-            phone: "12345677755",
-            address: "北京市，东街，后上大道西周街32号502"
-          },
-          orders: [
+          userid: 11,
+          goods: [
             {
               id: 203,
               num: "1",
@@ -119,6 +103,25 @@ export default {
       } else {
         return this.$store.getters.AddressList[this.index];
       }
+    },
+    price(){
+        var price = 0;
+        this.list.forEach(v => {
+            v.goods.forEach(good => {
+                price += parseInt(good.price);
+            })
+        })
+        price = price * 100;
+        return price;
+    },
+    goods_id(){
+        var goods_id = []
+        this.list.forEach(v => {
+            v.goods.forEach(good => {
+                goods_id.push(good.id);
+            })
+        })
+        return goods_id;
     }
   },
   mounted() {

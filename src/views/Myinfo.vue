@@ -31,8 +31,8 @@
       </van-row>
       <van-grid class="order-icon-color" :column-num="3">
         <van-grid-item icon="send-gift-o" text="待发货" to="/notsent" />
-        <van-grid-item icon="logistics" text="待收货" />
-        <van-grid-item icon="comment-o" text="评价" />
+        <van-grid-item icon="logistics" text="待收货" to="/untake" />
+        <van-grid-item icon="comment-o" text="评价" to="/comment" />
       </van-grid>
     </div>
 
@@ -93,7 +93,7 @@
     >登陆</van-button>
     <van-tabbar v-model="active_tag" style="position: fixed; bottom: 0px;">
       <van-tabbar-item icon="home-o" to="/">主页</van-tabbar-item>
-      <van-tabbar-item icon="cart-o">购物车</van-tabbar-item>
+      <van-tabbar-item icon="cart-o" to="/cart">购物车</van-tabbar-item>
       <van-tabbar-item icon="user-o" to="/myinfo">我的</van-tabbar-item>
     </van-tabbar>
   </div>

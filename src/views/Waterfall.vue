@@ -9,34 +9,32 @@
     <div class="container" ref="content">
       <div class="col">
         <div class="card" v-for="item in imgsList1" :key="item.id" v-on:click="reDirect($event)" :id="item.id">
-          <van-image src="https://img.yzcdn.cn/vant/cat.jpeg" style="width: 100%; display: block" />
+          <van-image :src="item.img" style="width: 100%; display: block" />
           <div class="detail">
             <div class="title">{{item.name}}</div>
             <div style="padding-top: 2.5%;">
-              <van-tag plain style="margin-left: 5%;">标签</van-tag>
-              <van-tag plain style="margin-left: 5%;">标签</van-tag>
+              <van-tag plain style="margin-left: 5%;">{{item.category.name}}</van-tag>
             </div>
             <div class="other">
               <div class="line" style="font-size: 12px;">￥</div>
               <div class="line" style="font-size: 22px;">{{item.price}}</div>
-              <div class="line" style="margin-left: 30%; font-size: 12px;">{{item.view}}人浏览</div>
+              <div class="line" style="position: absolute; right: 10px; font-size: 12px;">{{item.view}}人浏览</div>
             </div>
           </div>
         </div>
       </div>
       <div class="col">
         <div class="card" v-for="item in imgsList2" :key="item.id" v-on:click="reDirect($event)" :id="item.id">
-          <van-image src="https://img.yzcdn.cn/vant/cat.jpeg" style="width: 100%; display: block" />
+          <van-image :src="item.img" style="width: 100%; display: block" />
           <div class="detail">
             <div class="title">{{item.name}}</div>
             <div style="padding-top: 2.5%;">
-              <van-tag plain style="margin-left: 5%;">标签</van-tag>
-              <van-tag plain style="margin-left: 5%;">标签</van-tag>
+              <van-tag plain style="margin-left: 5%;">{{item.category.name}}</van-tag>
             </div>
             <div class="other">
               <div class="line" style="font-size: 12px;">￥</div>
               <div class="line" style="font-size: 22px;">{{item.price}}</div>
-              <div class="line" style="margin-left: 30%; font-size: 12px;">{{item.view}}人浏览</div>
+              <div class="line" style="position: absolute; right: 10px; font-size: 12px;">{{item.view}}人浏览</div>
             </div>
           </div>
         </div>
@@ -84,9 +82,24 @@ export default {
       this.imgsList2 = this.imgsList2.concat(imgsList2);
       this.index = this.index + 1;
     },
-    reDirect: function(e){
-      console.log(e.currentTarget.id);
-      this.$router.push('/good');
+    async reDirect(e){
+      var id = parseInt(e.currentTarget.id)
+      await this.api.get('/goods/view', {
+        id: id
+      })
+      var item = undefined;
+      this.imgs.forEach(element => {
+        if(element.id == id){
+          item = element
+        }
+      });
+      console.log(item)
+      this.$router.push({
+        path: "/good",
+        query: {
+          good: item,
+        }
+      });
     }
   }
 };
@@ -123,7 +136,7 @@ export default {
 }
 .detail {
   width: 100%;
-  height: 125px;
+  padding-bottom: 5%; 
   background: white;
 }
 .other {
@@ -131,6 +144,7 @@ export default {
   margin-left: 5%;
   display: flex;
   flex-direction: row;
+  position: relative;
 }
 .line {
   line-height: 28px;
