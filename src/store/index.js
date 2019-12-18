@@ -26,6 +26,14 @@ const store = new Vuex.Store({
         },
     },
     mutations: {
+        logout(state) { //登出按钮触发，还需继续补全，登出后，所有的状态都要初始化，购物车，自己的商品，订单等等
+            state.user = {
+                id: 0,
+                name: "未登录",
+                username: ""
+            };
+            state.addressList = [];
+        },
         async getMyInfo(state) {
             let data = await api.get('/user');
             state.user = data.data;
