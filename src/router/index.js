@@ -56,11 +56,39 @@ const routers = [
         component: (resolve) => require(['../views/Notsent.vue'], resolve),
     },
     {
+        path: '/untake',
+        meta: {
+            title: '待收货'
+        },
+        component: (resolve) => require(['../views/Untake.vue'], resolve),
+    },
+    {
+        path: '/comment',
+        meta: {
+            title: '待收货'
+        },
+        component: (resolve) => require(['../views/Comment.vue'], resolve),
+    },
+    {
         path: '/good',
         meta: {
             title: '商品详情'
         },
         component: (resolve) => require(['../views/Good.vue'], resolve),
-    }
+    },
+    {
+        path: '/cart',
+        meta:{
+            title: '购物车'
+        },
+        component: (resolve) => require(['../views/Cart.vue'], resolve),
+    },
+    {
+        path: '/order',
+        meta:{
+            title: '商品详情'
+        },
+        component: (resolve) => require(['../views/Order.vue'], resolve),
+    },
 ];
 export default routers;

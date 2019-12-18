@@ -9,14 +9,15 @@ const store = new Vuex.Store({
         user: {
             id: 0,
             name: "未登录",
-            username: ""
+            username: "",
         },
         addressList: [],
         category: [],
         myselling: [],
         myselling_has_next: false,
         myselling_next_num: null,
-        mysold: []
+        mysold: [],
+        cartList: [],
     },
     getters: {
         UserName: state => {
@@ -33,6 +34,9 @@ const store = new Vuex.Store({
         },
         Category: state => {
             return state.category;
+        },
+        CartList: state => {
+            return state.cartList;
         },
     },
     mutations: {
