@@ -1,7 +1,7 @@
 <template>
   <div class="notSentOrders">
     <van-nav-bar
-      title="待发货订单"
+      title="待收货订单"
       left-text="返回"
       left-arrow
       @click-left="()=>{this.$router.push('/myinfo')}"
@@ -32,13 +32,14 @@
             <span style="margin-left:4%">{{item.address_id.name}}</span>
           </template>
           <template slot="label">
-            <span >{{item.address_id.address}}</span>
+            <span>{{item.address_id.address}}</span>
           </template>
         </van-cell>
         <div style="color:gray;font-size:11px;margin-left:4%">
           <p>下单时间：2019-12-12 12:56:23</p>
           <p>订单号：123456789123456789</p>
         </div>
+        <van-button plain size="small" type="info" round style="margin:0px 2.5% 2.5% 75%;">确认收货</van-button>
       </van-list>
     </van-list>
   </div>

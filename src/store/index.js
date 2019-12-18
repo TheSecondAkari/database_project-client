@@ -9,9 +9,15 @@ const store = new Vuex.Store({
         user: {
             id: 0,
             name: "未登录",
-            username: ""
+            username: "",
         },
-        addressList: []
+        addressList: [],
+        category: [],
+        myselling: [],
+        myselling_has_next: false,
+        myselling_next_num: null,
+        mysold: [],
+        cartList: [],
     },
     getters: {
         UserName: state => {
@@ -20,8 +26,30 @@ const store = new Vuex.Store({
         AddressList: state => {
             return state.addressList;
         },
+        MySelling: state => {
+            return state.myselling;
+        },
+        MySold: state => {
+            return state.mysold;
+        },
+        Category: state => {
+            return state.category;
+        },
+        CartList: state => {
+            return state.cartList;
+        },
     },
     mutations: {
+        logout(state) { //登出按钮触发，还需继续补全，登出后，所有的状态都要初始化，购物车，自己的商品，订单等等
+            state.user = {
+                id: 0,
+                name: "未登录",
+                username: ""
+            };
+            state.addressList = [];
+            state.myselling = [];
+            state.mysold = [];
+        },
         async getMyInfo(state) {
             let data = await api.get('/user');
             state.user = data.data;
@@ -49,8 +77,41 @@ const store = new Vuex.Store({
                         address: address
                     });
                 }
+                state.addressList = tempList;
             }
-            state.addressList = tempList;
+        },
+        async getCategory(state) {
+            let data = await api.get("/categories");
+            if (data.status >= 200 && data.status < 300) {
+                data = data.data;
+                var tempList = [];
+                for (var i = 0; i < data.length; i++)
+                    tempList.push(
+                        data[i].name
+                    );
+                state.category = tempList;
+            }
+        },
+        async getMySelling(state) {
+            let data = await api.get("/my_goods");
+            if (data.status >= 200 && data.status < 300) {
+                state.myselling_has_next = data.data.has_next;
+                state.myselling_next_num = data.data.next_num;
+                data = data.data.items;
+                var tempList = [];
+                for (var i = 0; i < data.length; i++)
+                    tempList.push({
+                        id: data[i].id,
+                        name: data[i].name,
+                        price: data[i].price,
+                        created_at: data[i].created_at,
+                        detail: data[i].detail,
+                        img: data[i].img,
+                        imgs: data[i].imgs,
+                        category: data[i].category
+                    });
+                state.myselling = tempList;
+            }
         }
     },
     //   strict: debug,

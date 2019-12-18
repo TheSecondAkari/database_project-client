@@ -24,15 +24,15 @@
     </div>
 
     <!-- 用户的订单情况，购买的商品状态 -->
-    <div class="orders">
+    <div class="orders" style="text-align:center">
       <van-row type="flex" justify="space-between">
-        <van-col span="8">我的订单</van-col>
+        <van-col span="7">我的订单</van-col>
         <van-col span="8" style="color:gray;margin-right:10px;">查看全部订单></van-col>
       </van-row>
       <van-grid class="order-icon-color" :column-num="3">
-        <van-grid-item icon="send-gift-o" text="代发货" />
-        <van-grid-item icon="logistics" text="待收货" />
-        <van-grid-item icon="comment-o" text="评价" />
+        <van-grid-item icon="send-gift-o" text="待发货" to="/notsent" />
+        <van-grid-item icon="logistics" text="待收货" to="/untake" />
+        <van-grid-item icon="comment-o" text="评价" to="/comment" />
       </van-grid>
     </div>
 
@@ -41,8 +41,22 @@
       <van-row type="flex" justify="space-between">
         <van-col span="8">我的商品</van-col>
       </van-row>
-      <van-cell class="goods-icon-color" value="我发布的" icon="goods-collect-o" size="large" is-link to="/myselling" />
-      <van-cell class="goods-icon-color" value="我卖出的" icon="after-sale" size="large" is-link to="/mysold" />
+      <van-cell
+        class="goods-icon-color"
+        value="我发布的"
+        icon="goods-collect-o"
+        size="large"
+        is-link
+        to="/myselling"
+      />
+      <van-cell
+        class="goods-icon-color"
+        value="我卖出的"
+        icon="after-sale"
+        size="large"
+        is-link
+        to="/mysold"
+      />
     </div>
     <van-cell
       class="address-icon-color"
@@ -54,31 +68,32 @@
     />
     <van-collapse v-model="activeNames">
       <van-collapse-item title="修改密码" name="1">
-        <van-field type="password" label="原始密码" placeholder="请输入原始密码" error-message="原始密码错误" />
-        <van-field type="password" label="新密码" placeholder="请输入新密码" />
-        <van-field type="password" label="确认密码" placeholder="请输入手机号" error-message="两次密码不同" />
+        <van-field v-model="old_password" type="password" label="原始密码" placeholder="请输入原始密码" />
+        <van-field v-model="new_password" type="password" label="新密码" placeholder="请输入新密码">
+          <van-button type="primary" slot="button" size="small" @click="modifyPassword">确认</van-button>
+        </van-field>
       </van-collapse-item>
     </van-collapse>
     <br />
 
     <!-- 根据是否登陆，显示登陆按钮或者登出按钮 -->
     <van-button
-      v-if="judge"
+      v-if="logon"
       type="danger"
       round
-      style="width:90%;margin:5px"
-      @click="()=>{this.judge = false}"
+      style="width:90%; margin:5px 5% 20% 5%;"
+      @click="logout()"
     >退出当前账号</van-button>
     <van-button
       v-else
       type="info"
       round
-      style="width:90%;margin:5px"
+      style="width:90%; margin:5px 5% 20% 5%;"
       @click="()=>{this.$router.push('/login')}"
     >登陆</van-button>
     <van-tabbar v-model="active_tag" style="position: fixed; bottom: 0px;">
       <van-tabbar-item icon="home-o" to="/">主页</van-tabbar-item>
-      <van-tabbar-item icon="cart-o">购物车</van-tabbar-item>
+      <van-tabbar-item icon="cart-o" to="/cart">购物车</van-tabbar-item>
       <van-tabbar-item icon="user-o" to="/myinfo">我的</van-tabbar-item>
     </van-tabbar>
   </div>
@@ -90,9 +105,11 @@ export default {
   data() {
     return {
       name: "",
+      old_password: "",
+      new_password: "",
+      errmsg: "",
       modify: true,
       active_tag: 2,
-      judge: true,
       activeNames: []
     };
   },
@@ -100,6 +117,11 @@ export default {
   computed: {
     username() {
       return this.$store.getters.UserName;
+    },
+    logon() {
+      if (this.$store.state.user.id > 0) {
+        return true;
+      } else return false;
     }
   },
   methods: {
@@ -109,16 +131,31 @@ export default {
     },
     async modifyName() {
       var that = this;
-      let data = await this.api.put("/user", {
+      await this.api.put("/user", {
         name: that.name
       });
       this.$store.commit("getMyInfo");
-      console.log(data);
-      // this.$store.getter
       this.modify = true;
     },
-    cancel: function(){
+    cancel: function() {
       this.modify = true;
+    },
+    async modifyPassword() {
+      var that = this;
+      let data = await this.api.put("/user", {
+        old_password: that.old_password,
+        password: that.new_password
+      });
+      this.$store.commit("getMyInfo");
+      console.log(data);
+      this.activeNames = [];
+      this.old_password = "";
+      this.new_password = "";
+      this.errmsg = "";
+    },
+    //登出账号
+    logout() {
+      this.$store.commit("logout");
     }
   }
 };

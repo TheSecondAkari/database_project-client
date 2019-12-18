@@ -13,7 +13,7 @@
     <van-cell-group>
       <van-field v-model="password" type="password" placeholder="请输入密码" left-icon="eye-o" required />
     </van-cell-group>
-    <van-button icon="arrow" type="info" @click="login()" style="margin-top:20%;width:96%">登陆</van-button>
+    <van-button icon="arrow" type="info" @click="login()" style="margin-top:20%;width:96%; margin:0 2%;">登陆</van-button>
     <div class="foot">
       <!-- 居中 -->
       <van-row type="flex" justify="center" style="font-weight:lighter">
@@ -41,6 +41,7 @@ export default {
             username: this.account,
             password: this.password
         });
+        console.log(data);
         if (data.status >= 200 && data.status < 300) {
             sessionStorage.setItem("Authorization", data.data.Authorization);
             this.$notify({
@@ -49,6 +50,9 @@ export default {
             });
             this.$store.commit("getMyInfo");
             this.$store.commit("getAddresses"); 
+            this.$store.commit("getMySelling");
+            this.$store.commit("getCategory");
+
             this.$router.push('/');
         }
     },

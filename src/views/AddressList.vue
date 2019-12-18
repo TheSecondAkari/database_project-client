@@ -1,7 +1,7 @@
 <template>
   <div class="addressList">
     <van-nav-bar title="地址管理" left-text="返回" left-arrow @click-left="onClickLeft" />
-    <van-address-list v-model="chosenAddressId" :list="addresslist" @add="onAdd" @edit="onEdit" />
+    <van-address-list v-model="chosenAddressId" :list="addresslist" @add="onAdd" @edit="onEdit" @click-item="chose"/>
     <van-popup v-model="addshow" position="bottom" closeable :style="{ height: '50%' }">
       <h3>地址信息</h3>
       <van-address-edit
@@ -27,6 +27,7 @@
 export default {
   data() {
     return {
+      toOrder: undefined,
       oldItem: {}, //用于地址修改时的，传原始值
       addshow: false, // 用于控制弹出层的值Boolean
       editshow: false,
@@ -4074,6 +4075,9 @@ export default {
       chosenAddressId: "1" //初始页面默认选中第一个地址
     };
   },
+  mounted(){
+    this.toOrder = this.$route.query.change
+  },
   computed: {
     addresslist() {
       return this.$store.getters.AddressList;
@@ -4108,6 +4112,17 @@ export default {
         this.$store.commit("getAddresses");
       }
       this.addshow = false;
+    },
+    chose(item,index){
+      console.log(item)
+      if(this.toOrder){
+        this.$router.push({
+          path: "/order",
+          query: {
+            index: index
+          }
+        })
+      }
     },
     async onSave(Info) {
       let data = await this.api.put("/address/" + Info.id, {

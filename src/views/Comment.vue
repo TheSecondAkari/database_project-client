@@ -1,7 +1,7 @@
 <template>
   <div class="notSentOrders">
     <van-nav-bar
-      title="待发货订单"
+      title="待评价订单"
       left-text="返回"
       left-arrow
       @click-left="()=>{this.$router.push('/myinfo')}"
@@ -12,7 +12,6 @@
           <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
           <div style="width:70%">
             <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
-            <!-- <div class="info">我卢本伟真TM没开挂！不信你们可以随便石锤我</div> -->
           </div>
         </div>
         <van-card
@@ -32,13 +31,34 @@
             <span style="margin-left:4%">{{item.address_id.name}}</span>
           </template>
           <template slot="label">
-            <span >{{item.address_id.address}}</span>
+            <span>{{item.address_id.address}}</span>
           </template>
         </van-cell>
         <div style="color:gray;font-size:11px;margin-left:4%">
           <p>下单时间：2019-12-12 12:56:23</p>
           <p>订单号：123456789123456789</p>
         </div>
+        <van-button
+          plain
+          size="small"
+          type="info"
+          round
+          style="margin:0px 2.5% 2.5% 75%;"
+          @click="comment"
+        >评价</van-button>
+        <van-popup v-model="show" position="bottom" autosize>
+          <van-field
+            v-model="message"
+            autosize
+            label="评价"
+            type="textarea"
+            maxlength="150"
+            placeholder="请输入评价"
+            show-word-limit
+          />
+          <van-button size="small" round style="margin-left: 2.5%" @click="clean">清空</van-button>
+          <van-button size="small" round style="margin-left: 55%" type="info" @click="comfirm">确认发布</van-button>
+        </van-popup>
       </van-list>
     </van-list>
   </div>
@@ -49,8 +69,10 @@ export default {
   name: "notSent",
   data() {
     return {
+      show: false,
       loading: false,
       finished: false,
+      message: "",
       list: [
         {
           orderid: 1,
@@ -117,7 +139,17 @@ export default {
       ]
     };
   },
-  methods: {}
+  methods: {
+    comment() {
+      this.show = true;
+    },
+    clean(){
+        this.message = "";
+    },
+    comfirm(){
+
+    },
+  }
 };
 </script>
 
