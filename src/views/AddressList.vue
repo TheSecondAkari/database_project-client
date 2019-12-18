@@ -27,6 +27,7 @@
 export default {
   data() {
     return {
+      toOrder: undefined,
       oldItem: {}, //用于地址修改时的，传原始值
       addshow: false, // 用于控制弹出层的值Boolean
       editshow: false,
@@ -4073,6 +4074,9 @@ export default {
       },
       chosenAddressId: "1" //初始页面默认选中第一个地址
     };
+  },
+  mounted(){
+    this.toOrder = this.$route.query.change
   },
   computed: {
     addresslist() {

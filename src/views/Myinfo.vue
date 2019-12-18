@@ -54,9 +54,17 @@
     />
     <van-collapse v-model="activeNames">
       <van-collapse-item title="修改密码" name="1">
-        <van-field type="password" label="原始密码" placeholder="请输入原始密码" error-message="原始密码错误" />
-        <van-field type="password" label="新密码" placeholder="请输入新密码" />
-        <van-field type="password" label="确认密码" placeholder="请输入手机号" error-message="两次密码不同" />
+        <van-field
+          v-model="old_password"
+          type="password"
+          label="原始密码"
+          placeholder="请输入原始密码"
+          :error-message="errmsg"
+          @blur="compare"
+        />
+        <van-field v-model="new_password" type="password" label="新密码" placeholder="请输入新密码">
+          <van-button type="primary" slot="button" size="small" @click="modifyPassword">确认</van-button>
+        </van-field>
       </van-collapse-item>
     </van-collapse>
     <br />
@@ -90,6 +98,9 @@ export default {
   data() {
     return {
       name: "",
+      old_password: "",
+      new_password: "",
+      errmsg: "",
       modify: true,
       active_tag: 2,
       judge: true,
@@ -99,6 +110,9 @@ export default {
   mounted() {},
   computed: {
     username() {
+      return this.$store.getters.UserName;
+    },
+    password() {
       return this.$store.getters.UserName;
     }
   },
@@ -114,11 +128,27 @@ export default {
       });
       this.$store.commit("getMyInfo");
       console.log(data);
-      // this.$store.getter
       this.modify = true;
     },
-    cancel: function(){
+    cancel: function() {
       this.modify = true;
+    },
+    compare: function() {
+      if (this.old_password != this.password) {
+        this.errmsg = "密码错误！";
+      }
+    },
+    async modifyPassword() {
+      var that = this;
+      let data = await this.api.put("/user", {
+        password: that.new_password
+      });
+      this.$store.commit("getMyInfo");
+      console.log(data);
+      this.activeNames = [];
+      this.old_password = "";
+      this.new_password = "";
+      this.errmsg = "";
     }
   }
 };

@@ -47,6 +47,13 @@ const routers = [
             title: '商品详情'
         },
         component: (resolve) => require(['../views/Good.vue'], resolve),
-    }
+    },
+    {
+        path: '/order',
+        meta:{
+            title: '商品详情'
+        },
+        component: (resolve) => require(['../views/Order.vue'], resolve),
+    },
 ];
 export default routers;
