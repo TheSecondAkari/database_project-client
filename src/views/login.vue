@@ -41,6 +41,7 @@ export default {
             username: this.account,
             password: this.password
         });
+        console.log(data);
         if (data.status >= 200 && data.status < 300) {
             sessionStorage.setItem("Authorization", data.data.Authorization);
             this.$notify({
@@ -49,6 +50,9 @@ export default {
             });
             this.$store.commit("getMyInfo");
             this.$store.commit("getAddresses"); 
+            this.$store.commit("getMySelling");
+            this.$store.commit("getCategory");
+            
             this.$router.push('/');
         }
     },

@@ -28,7 +28,7 @@
         <van-cell :value="item.address_id.phone">
           <!-- 使用 title 插槽来自定义标题 -->
           <template slot="title">
-            <van-tag round :size="medium" type="primary">收</van-tag>
+            <van-tag round size="medium" type="primary">收</van-tag>
             <span style="margin-left:4%">{{item.address_id.name}}</span>
           </template>
           <template slot="label">
