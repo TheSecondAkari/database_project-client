@@ -35,6 +35,20 @@ const routers = [
         component: (resolve) => require(['../views/AddressList.vue'], resolve),
     },
     {
+        path: '/myselling',
+        meta: {
+            title: '我发布的'
+        },
+        component: (resolve) => require(['../views/Myselling.vue'], resolve),
+    },
+    {
+        path: '/mysold',
+        meta: {
+            title: '我卖出的'
+        },
+        component: (resolve) => require(['../views/Mysold.vue'], resolve),
+    },
+    {
         path: '/notsent',
         meta: {
             title: '未发货'
@@ -43,7 +57,7 @@ const routers = [
     },
     {
         path: '/good',
-        meta:{
+        meta: {
             title: '商品详情'
         },
         component: (resolve) => require(['../views/Good.vue'], resolve),

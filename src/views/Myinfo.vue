@@ -41,8 +41,8 @@
       <van-row type="flex" justify="space-between">
         <van-col span="8">我的商品</van-col>
       </van-row>
-      <van-cell class="goods-icon-color" value="我发布的" icon="goods-collect-o" size="large" is-link />
-      <van-cell class="goods-icon-color" value="我卖出的" icon="after-sale" size="large" is-link />
+      <van-cell class="goods-icon-color" value="我发布的" icon="goods-collect-o" size="large" is-link to="/myselling" />
+      <van-cell class="goods-icon-color" value="我卖出的" icon="after-sale" size="large" is-link to="/mysold" />
     </div>
     <van-cell
       class="address-icon-color"
