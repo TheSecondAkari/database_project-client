@@ -24,13 +24,13 @@
     </div>
 
     <!-- 用户的订单情况，购买的商品状态 -->
-    <div class="orders">
+    <div class="orders" style="text-align:center">
       <van-row type="flex" justify="space-between">
-        <van-col span="8">我的订单</van-col>
+        <van-col span="7">我的订单</van-col>
         <van-col span="8" style="color:gray;margin-right:10px;">查看全部订单></van-col>
       </van-row>
       <van-grid class="order-icon-color" :column-num="3">
-        <van-grid-item icon="send-gift-o" text="代发货" />
+        <van-grid-item icon="send-gift-o" text="待发货" to="/notsent"/>
         <van-grid-item icon="logistics" text="待收货" />
         <van-grid-item icon="comment-o" text="评价" />
       </van-grid>
@@ -63,11 +63,11 @@
 
     <!-- 根据是否登陆，显示登陆按钮或者登出按钮 -->
     <van-button
-      v-if="judge"
+      v-if="logon"
       type="danger"
       round
       style="width:90%;margin:5px"
-      @click="()=>{this.judge = false}"
+      @click="logout()"
     >退出当前账号</van-button>
     <van-button
       v-else
@@ -92,7 +92,6 @@ export default {
       name: "",
       modify: true,
       active_tag: 2,
-      judge: true,
       activeNames: []
     };
   },
@@ -100,6 +99,12 @@ export default {
   computed: {
     username() {
       return this.$store.getters.UserName;
+    },
+    logon(){
+        if(this.$store.state.user.id > 0){
+            return true;
+        }
+        else return false;
     }
   },
   methods: {
@@ -113,12 +118,14 @@ export default {
         name: that.name
       });
       this.$store.commit("getMyInfo");
-      console.log(data);
-      // this.$store.getter
       this.modify = true;
     },
     cancel: function(){
       this.modify = true;
+    },
+    //登出账号
+    logout(){
+        this.$store.commit("logout");
     }
   }
 };
