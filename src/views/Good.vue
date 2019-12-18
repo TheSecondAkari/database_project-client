@@ -32,7 +32,7 @@
       <van-goods-action>
         <van-goods-action-icon icon="chat-o" text="客服" />
         <van-goods-action-icon icon="cart-o" text="购物车" @click="onClickIcon" />
-        <van-goods-action-button type="warning" text="加入购物车" @click="onClickButton" />
+        <van-goods-action-button type="warning" text="加入购物车" @click="onAdd" />
         <van-goods-action-button type="danger" text="立即购买" @click="goToOrder" />
       </van-goods-action>
     </div>
@@ -44,11 +44,11 @@ export default {
   data() {
     return {
       current: 0,
-      good: {},
+      good: {}
     };
   },
-  created(){
-    this.good = this.$route.query.good
+  created() {
+    this.good = this.$route.query.good;
   },
   methods: {
     onClickIcon: function() {
@@ -59,8 +59,8 @@ export default {
       this.$toast("点击按钮");
     },
 
-    goToOrder: function(){
-      this.$router.push('/order')
+    goToOrder: function() {
+      this.$router.push("/order");
     },
 
     onChange(index) {
@@ -69,6 +69,10 @@ export default {
 
     back: function() {
       this.$router.push("/");
+    },
+
+    onAdd: function() {
+      this.$store.commit("addCart", this.good)
     }
   }
 };
@@ -114,7 +118,7 @@ export default {
   display: flex;
   flex-direction: row;
 }
-.info{
+.info {
   margin-top: 2.5%;
   margin-left: 5%;
   word-wrap: break-word;

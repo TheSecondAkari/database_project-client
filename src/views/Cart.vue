@@ -3,24 +3,29 @@
     <div style="background-color: orange">
       <van-nav-bar title="购物车" />
       <van-list style="padding-bottom:30%;">
-        <van-list class="order-css" v-for="item in list" :key="item.userid">
+        <van-list class="order-css" v-for="item in list" :key="item.name">
           <div class="shop">
             <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
             <div style="width:70%">
-              <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
+              <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">{{item.name}}</div>
             </div>
           </div>
           <van-card
             class="card"
             v-for="good in item.goods"
             :key="good.id"
-            :num="good.num"
+            :num="1"
             :price="good.price"
-            :desc="good.desc"
-            :title="good.title"
-            :thumb="good.thumb"
+            :desc="good.detail"
+            :title="good.name"
+            :thumb="good.img"
           >
-            <van-checkbox v-model="good.add" slot="footer" style="position: relative; left: 95%;"></van-checkbox>
+            <van-checkbox
+              v-model="good.add"
+              slot="footer"
+              style="position: relative; left: 95%;"
+              @click="getCart"
+            ></van-checkbox>
           </van-card>
         </van-list>
       </van-list>
@@ -54,62 +59,12 @@
 export default {
   data() {
     return {
-      checked: true,
       active_tag: 1,
-      list: [
-        {
-          userid: 1,
-          goods: [
-            {
-              id: 23,
-              num: "1",
-              price: "5.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg",
-              add: false
-            },
-            {
-              id: 3,
-              num: "1",
-              price: "15.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg",
-              add: false
-            }
-          ]
-        },
-        {
-          userid: 55,
-          goods: [
-            {
-              id: 83,
-              num: "1",
-              price: "2.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg",
-              add: false
-            }
-          ]
-        },
-        {
-          userid: 11,
-          goods: [
-            {
-              id: 203,
-              num: "1",
-              price: "50.01",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg",
-              add: false
-            }
-          ]
-        }
-      ]
+      list: []
     };
+  },
+  mounted() {
+    this.list = this.$store.getters.CartList;
   },
   computed: {
     total() {
@@ -119,11 +74,17 @@ export default {
           if (good.add) {
             total += Number(good.price);
           }
-        })
-      })
+        });
+      });
       return total;
-    },
-    
+    }
+  },
+  methods: {
+    getCart() {
+      console.log("NMSL");
+      console.log(this.$store.getters.CartList.slice(0))
+      this.list = this.$store.getters.CartList.slice(0);
+    }
   }
 };
 </script>
