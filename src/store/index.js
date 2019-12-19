@@ -52,20 +52,27 @@ const store = new Vuex.Store({
         },
         addCart(state, good) {
             var list = [];
+            console.log(state.cartList)
             if (state.cartList.length == 0) {
+                console.log(state.cartList)
                 list["name"] = good.vendor.name;
                 list["goods"] = [];
                 good["add"] = false;
                 list["goods"].push(good);
                 state.cartList.push(list);
-                console.log(state.cartList)
                 return;
             } else {
                 var mask = 1
                 state.cartList.forEach(v => {
                     if (v.name == good.vendor.name) {
                         mask = 0;
-                        if (v.goods.id != good.id) {
+                        var shit = 1;
+                        v.goods.forEach(item => {
+                            if (item.id == good.id) {
+                                shit = 0;
+                            }
+                        })
+                        if (shit) {
                             good["add"] = false;
                             v.goods.push(good);
                         }
@@ -77,10 +84,15 @@ const store = new Vuex.Store({
                     good["add"] = false;
                     list["goods"].push(good);
                     state.cartList.push(list);
+                    console.log(state.cartList)
                 }
             }
-            console.log("!!!!!!!!!!!!")
-            console.log(state.cartList)
+        },
+        cleanCartList(state) {
+            state.cartList.length = 0;
+        },
+        setCartList(state, list){
+            state.cartList = list
         },
         async getMyInfo(state) {
             let data = await api.get('/user');

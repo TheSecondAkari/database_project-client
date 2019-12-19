@@ -24,16 +24,14 @@
               v-model="good.add"
               slot="footer"
               style="position: relative; left: 95%;"
-              @click="getCart"
+              @click="refresh"
             ></van-checkbox>
           </van-card>
         </van-list>
       </van-list>
     </div>
     <div>
-      <div
-        style="height: 40px; width: 100%; position: fixed; bottom: 50px; background-color: white;"
-      >
+      <div class="footer">
         <div style="display: flex; flex-direction: row; margin-left: 42%;">
           <div style="height: 30px; line-height: 35px; margin-top: 5px; font-size: 18px">
             合计：
@@ -43,6 +41,7 @@
             round
             color="orange"
             style="margin-left: 4%; height: 30px; line-height: 30px; margin-top: 5px;"
+            @click="submit"
           >结算</van-button>
         </div>
       </div>
@@ -69,8 +68,8 @@ export default {
   computed: {
     total() {
       var total = 0;
-      this.list.forEach(order => {
-        order.goods.forEach(good => {
+      this.list.forEach(v => {
+        v.goods.forEach(good => {
           if (good.add) {
             total += Number(good.price);
           }
@@ -80,10 +79,25 @@ export default {
     }
   },
   methods: {
-    getCart() {
-      console.log("NMSL");
-      console.log(this.$store.getters.CartList.slice(0))
-      this.list = this.$store.getters.CartList.slice(0);
+    refresh() {
+      this.list.splice(0, 0);
+    },
+    submit() {
+      var item = [];
+      this.list.forEach(v => {
+        v.goods.forEach(good => {
+          if(good.add){
+            item.push(good)
+          }
+        })
+      })
+      this.$router.push({
+        path: "/order",
+        query: {
+          type: 0,
+          goods: item,
+        }
+      })
     }
   }
 };
@@ -105,5 +119,12 @@ export default {
   margin-left: 2.5%;
   display: flex;
   flex-direction: row;
+}
+.footer {
+  height: 40px;
+  width: 100%;
+  position: fixed;
+  bottom: 50px;
+  background-color: white;
 }
 </style>

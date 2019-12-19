@@ -4072,7 +4072,7 @@ export default {
           820201: "离岛"
         }
       },
-      chosenAddressId: "1" //初始页面默认选中第一个地址
+      chosenAddressId: "1", //初始页面默认选中第一个地址
     };
   },
   mounted(){
@@ -4114,12 +4114,12 @@ export default {
       this.addshow = false;
     },
     chose(item,index){
-      console.log(item)
       if(this.toOrder){
         this.$router.push({
           path: "/order",
           query: {
-            index: index
+            type: 1,
+            index: index,
           }
         })
       }
