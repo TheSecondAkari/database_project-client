@@ -21,7 +21,7 @@
                   src="https://img.yzcdn.cn/vant/cat.jpeg"
                 />
                 <div style="width:70%">
-                  <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
+                  <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">{{item.userName}}</div>
                   <!-- <div class="info">我卢本伟真TM没开挂！不信你们可以随便石锤我</div> -->
                 </div>
               </div>
@@ -55,11 +55,18 @@
                   <p style="margin:5px 0px 5px 0px">{{item.receive.detail}}</p>
                 </template>
               </van-cell>
-              <!-- <div style="color:gray;font-size:11px;margin-left:4%">
-                <p>下单时间：2019-12-12 12:56:23</p>
-                <p>订单号：123456789123456789</p>
-              </div>-->
-              <van-button type="danger" @click="sendConfirm(index)">确认发货</van-button>
+              <div style="color:gray;font-size:11px;margin-left:4%">
+                <p>下单时间：{{item.date}}</p>
+                <p>订单号：{{item.orderId}}</p>
+              </div>
+              <van-button
+                plain
+                size="small"
+                type="info"
+                round
+                style="margin:0px 2.5% 2.5% 75%;"
+                @click="Confirm(index)"
+              >确认发货</van-button>
             </van-cell>
           </van-list>
         </van-tab>
@@ -74,7 +81,7 @@
                   src="https://img.yzcdn.cn/vant/cat.jpeg"
                 />
                 <div style="width:70%">
-                  <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
+                  <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">{{item.userName}}</div>
                   <!-- <div class="info">我卢本伟真TM没开挂！不信你们可以随便石锤我</div> -->
                 </div>
               </div>
@@ -108,10 +115,10 @@
                   <p style="margin:5px 0px 5px 0px">{{item.receive.detail}}</p>
                 </template>
               </van-cell>
-              <!-- <div style="color:gray;font-size:11px;margin-left:4%">
-                <p>下单时间：2019-12-12 12:56:23</p>
-                <p>订单号：123456789123456789</p>
-              </div>-->
+              <div style="color:gray;font-size:11px;margin-left:4%">
+                <p>下单时间：{{item.date}}</p>
+                <p>订单号：{{item.orderId}}</p>
+              </div>
             </van-cell>
           </van-list>
         </van-tab>
@@ -126,7 +133,7 @@
                   src="https://img.yzcdn.cn/vant/cat.jpeg"
                 />
                 <div style="width:70%">
-                  <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
+                  <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">{{item.userName}}</div>
                   <!-- <div class="info">我卢本伟真TM没开挂！不信你们可以随便石锤我</div> -->
                 </div>
               </div>
@@ -160,10 +167,12 @@
                   <p style="margin:5px 0px 5px 0px">{{item.receive.detail}}</p>
                 </template>
               </van-cell>
-              <!-- <div style="color:gray;font-size:11px;margin-left:4%">
-                <p>下单时间：2019-12-12 12:56:23</p>
-                <p>订单号：123456789123456789</p>
-              </div>-->
+              <div style="color:gray;font-size:11px;margin-left:4%">
+                <p>下单时间：{{item.date}}</p>
+                <p>订单号：{{item.orderId}}</p>
+              </div>
+              <van-cell v-if="item.comment==null" title="用户未作评价" />
+              <van-cell v-else title="评价" :label="item.comment.content" />
             </van-cell>
           </van-list>
         </van-tab>
@@ -180,43 +189,41 @@ export default {
       loading: false,
       finished: false,
       orderId: "",
+      userName: ""
     };
   },
   computed: {
     goodList() {
       return this.$store.getters.MySold;
     },
-    goodList1(){
-        var temp=[];
-        for (var i = 0; i < this.goodList.length; i++) 
-        if (this.goodList[i].status == "待发货")
-          temp.push(this.goodList[i]);
-        return temp;
+    goodList1() {
+      var temp = [];
+      for (var i = 0; i < this.goodList.length; i++)
+        if (this.goodList[i].status == "待发货") temp.push(this.goodList[i]);
+      return temp;
     },
-    goodList2(){
-        var temp=[];
-        for (var i = 0; i < this.goodList.length; i++) 
-        if (this.goodList[i].status == "已发货")
-          temp.push(this.goodList[i]);
-        return temp;
+    goodList2() {
+      var temp = [];
+      for (var i = 0; i < this.goodList.length; i++)
+        if (this.goodList[i].status == "已发货") temp.push(this.goodList[i]);
+      return temp;
     },
-    goodList3(){
-        var temp=[];
-        for (var i = 0; i < this.goodList.length; i++) 
+    goodList3() {
+      var temp = [];
+      for (var i = 0; i < this.goodList.length; i++)
         if (this.goodList[i].status == "已确认收货")
           temp.push(this.goodList[i]);
-        return temp;
+      return temp;
     }
   },
   methods: {
-    sendConfirm(index) {
+    Confirm(index) {
       this.$dialog
         .confirm({
           title: "",
           message: "是否确认已发货？"
         })
         .then(async () => {
-          
           let data = await this.api.put(
             "/order/" + this.goodList1[index].orderId + "/state",
             { state: 2 }
@@ -229,17 +236,13 @@ export default {
             this.getList();
             console.log(this.goodList2);
           }
-          
+
           // on confirm
         })
         .catch(() => {
           this.show = false;
           // on cancel
         });
-    },
-    afterRead(file) {
-      // 此时可以自行将文件上传至服务器
-      return file;
     },
     onLoad() {
       // 异步更新数据

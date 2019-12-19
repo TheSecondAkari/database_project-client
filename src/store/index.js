@@ -214,8 +214,10 @@ const store = new Vuex.Store({
                         orderId:data[i].id,
                         status: data[i].state,
                         receive: data[i].address,
-                        goodsList:itemList
-                        
+                        goodsList:itemList,
+                        comment:data[i].comment,
+                        date:data[i].created_at,
+                        userName:data[i].user.name,
                     })
                 
                 }
