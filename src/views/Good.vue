@@ -72,6 +72,7 @@ export default {
     },
 
     onAdd: function() {
+      this.$toast("添加成功！")
       this.$store.commit("addCart", this.good)
     }
   }

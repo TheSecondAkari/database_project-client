@@ -15,27 +15,28 @@
       </van-panel>
     </div>
     <van-list style="padding-bottom:18%;">
-      <van-list class="order-css" v-for="item in list" :key="item.userid">
-        <div class="shop">
-          <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-          <div style="width:70%">
-            <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
+      <van-list class="order-css" v-for="item in list" :key="item.name">
+        <div v-for="good in item.goods" :key="good.id">
+          <div class="shop" v-if="good.add">
+            <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+            <div style="width:70%">
+              <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">{{item.name}}</div>
+            </div>
           </div>
+          <van-card
+            class="card"
+            :num="1"
+            :price="good.price"
+            :desc="good.detail"
+            :title="good.name"
+            :thumb="good.img"
+            v-if="good.add"
+          />
         </div>
-        <van-card
-          class="card"
-          v-for="good in item.goods"
-          :key="good.id"
-          :num="good.num"
-          :price="good.price"
-          :desc="good.desc"
-          :title="good.title"
-          :thumb="good.thumb"
-        />
       </van-list>
     </van-list>
     <div>
-      <van-submit-bar :price="price" button-text="提交订单" />
+      <van-submit-bar :price="price" button-text="提交订单" @submit="submit" />
     </div>
   </div>
 </template>
@@ -45,55 +46,8 @@ export default {
   data() {
     return {
       index: undefined,
-      list: [
-        {
-          userid: 1,
-          goods: [
-            {
-              id: 23,
-              num: "1",
-              price: "5.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg"
-            },
-            {
-              id: 3,
-              num: "1",
-              price: "15.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg"
-            }
-          ]
-        },
-        {
-          userid: 55,
-          goods: [
-            {
-              id: 83,
-              num: "1",
-              price: "2.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg"
-            }
-          ]
-        },
-        {
-          userid: 11,
-          goods: [
-            {
-              id: 203,
-              num: "1",
-              price: "50.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg"
-            }
-          ]
-        }
-      ]
+      list: [],
+      goods: []
     };
   },
   computed: {
@@ -104,28 +58,34 @@ export default {
         return this.$store.getters.AddressList[this.index];
       }
     },
-    price(){
-        var price = 0;
-        this.list.forEach(v => {
-            v.goods.forEach(good => {
-                price += parseInt(good.price);
-            })
-        })
-        price = price * 100;
-        return price;
+    goods_id() {
+      var goods_id = [];
+      console.log(this.goods);
+      this.goods.forEach(v => {
+        goods_id.push(v.id);
+      });
+      return goods_id;
     },
-    goods_id(){
-        var goods_id = []
-        this.list.forEach(v => {
-            v.goods.forEach(good => {
-                goods_id.push(good.id);
-            })
-        })
-        return goods_id;
+    price() {
+      var price = 0;
+      this.$store.state.cartList.forEach(v => {
+        v.goods.forEach(good => {
+          if (good.add) {
+            price += good.price * 100;
+          }
+        });
+      });
+      return price;
     }
   },
   mounted() {
-    this.index = this.$route.query.index;
+    var type = this.$route.query.index;
+    if (type) {
+      this.index = this.$route.query.index;
+    } else {
+      this.list = this.$store.state.cartList;
+      this.goods = this.$route.query.goods;
+    }
   },
   methods: {
     Back() {
@@ -138,6 +98,18 @@ export default {
           change: true
         }
       });
+    },
+    async submit() {
+      console.log("!!!!!!!");
+      var address_id = this.address.id;
+      var goods_id = this.goods_id;
+      let data = await this.api.post("/orders", {
+        address_id: address_id,
+        goods_id: goods_id
+      });
+      console.log(data);
+      this.$toast("下单成功！");
+      this.$router.push("/");
     }
   }
 };
@@ -150,7 +122,7 @@ export default {
 .order-css {
   overflow: hidden;
   border-radius: 10px;
-  margin:5px 2.5%;
+  margin: 5px 2.5%;
   background-color: white;
 }
 .shop {

@@ -34,9 +34,7 @@
       </van-list>
     </div>
     <div>
-      <div
-        style="height: 40px; width: 100%; position: fixed; bottom: 50px; background-color: white;"
-      >
+      <div class="footer">
         <div style="display: flex; flex-direction: row; margin-left: 42%;">
           <div style="height: 30px; line-height: 35px; margin-top: 5px; font-size: 18px">
             合计：
@@ -46,6 +44,7 @@
             round
             color="orange"
             style="margin-left: 4%; height: 30px; line-height: 30px; margin-top: 5px;"
+            @click="submit"
           >结算</van-button>
         </div>
       </div>
@@ -63,7 +62,7 @@ export default {
   data() {
     return {
       active_tag: 1,
-      list: []
+      list: [] //是否绑定为computed
     };
   },
   mounted() {
@@ -92,6 +91,23 @@ export default {
         this.$set(this.list[0].goods[0], "add", !this.list[0].goods[0].add);
         this.list = [...this.list];
         this.$store.commit("replaceCart", this.list);
+    },
+    submit() {
+      var item = [];
+      this.list.forEach(v => {
+        v.goods.forEach(good => {
+          if(good.add){
+            item.push(good)
+          }
+        })
+      })
+      this.$router.push({
+        path: "/order",
+        query: {
+          type: 0,
+          goods: item,
+        }
+      })
     }
   }
 };
@@ -113,5 +129,12 @@ export default {
   margin-left: 2.5%;
   display: flex;
   flex-direction: row;
+}
+.footer {
+  height: 40px;
+  width: 100%;
+  position: fixed;
+  bottom: 50px;
+  background-color: white;
 }
 </style>

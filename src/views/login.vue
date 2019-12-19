@@ -60,6 +60,7 @@ export default {
         this.$store.commit("getNotSent");
         this.$store.commit("getUnTake");
         this.$store.commit("getTaken");
+        this.$store.commit("getMySold");
         this.$router.push("/");
       }
     },

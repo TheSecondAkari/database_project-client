@@ -14,6 +14,7 @@ const store = new Vuex.Store({
         addressList: [],
         category: [],
         myselling: [],
+        myselling1: [],
         myselling_has_next: false,
         myselling_next_num: null,
         mysold: [],
@@ -50,6 +51,7 @@ const store = new Vuex.Store({
         Taken: state => {
             return state.taken;
         },
+
     },
     mutations: {
         setCartAdd(state, data) {
@@ -81,20 +83,27 @@ const store = new Vuex.Store({
         },
         addCart(state, good) {
             var list = [];
+            console.log(state.cartList)
             if (state.cartList.length == 0) {
+                console.log(state.cartList)
                 list["name"] = good.vendor.name;
                 list["goods"] = [];
                 good["add"] = false;
                 list["goods"].push(good);
                 state.cartList.push(list);
-                console.log(state.cartList)
                 return;
             } else {
                 var mask = 1
                 state.cartList.forEach(v => {
                     if (v.name == good.vendor.name) {
                         mask = 0;
-                        if (v.goods.id != good.id) {
+                        var shit = 1;
+                        v.goods.forEach(item => {
+                            if (item.id == good.id) {
+                                shit = 0;
+                            }
+                        })
+                        if (shit) {
                             good["add"] = false;
                             v.goods.push(good);
                         }
@@ -106,10 +115,15 @@ const store = new Vuex.Store({
                     good["add"] = false;
                     list["goods"].push(good);
                     state.cartList.push(list);
+                    console.log(state.cartList)
                 }
             }
-            console.log("!!!!!!!!!!!!")
-            console.log(state.cartList)
+        },
+        cleanCartList(state) {
+            state.cartList.length = 0;
+        },
+        setCartList(state, list){
+            state.cartList = list
         },
         async getMyInfo(state) {
             let data = await api.get('/user');
@@ -172,6 +186,42 @@ const store = new Vuex.Store({
                         category: data[i].category
                     });
                 state.myselling = tempList;
+            }
+        },
+        async getMySold(state) {
+            let data = await api.get("/sold/orders");
+            if (data.status >= 200 && data.status < 300) {
+
+                data = data.data.items;
+                var tempList = [];
+                for (var i = 0; i < data.length; i++) {
+                    var itemList=[];
+                    for(var j = 0; j < data[i].item.length; j++)
+                    {
+                        
+                        itemList.push({
+                            goodId:data[i].item[j].id,
+                            goodName: data[i].item[j].goods.name,
+                            price: data[i].item[j].goods.price,
+                            detail: data[i].item[j].goods.detail,
+                            img: data[i].item[j].goods.img,
+                            category: data[i].item[j].goods.category,
+                            
+                        });
+
+                    }
+                    tempList.push({
+                        orderId:data[i].id,
+                        status: data[i].state,
+                        receive: data[i].address,
+                        goodsList:itemList
+                        
+                    })
+                
+                }
+
+                state.mysold = tempList;
+                
             }
         },
         async getNotSent(state) {
@@ -305,22 +355,7 @@ const store = new Vuex.Store({
                 console.log("已收货订单获取后", tempList);
             }
         },
-        //   address: {
-        //     name: "一号机",
-        //     phone: "12345678955",
-        //     desc: "北京市，西街，32号502" // 要合并
-        //   },
-        //   vendor:{},
-        //   goods: [
-        //     {
-        //       id: 23,
-        //       num: "1",
-        //       price: "5.00",
-        //       category:"",
-        //       desc: "穿了10年的纪念版",
-        //       title: "狗哥的皮大衣",
-        //       thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg"
-        //       imgs:[]
+        
     },
     //   strict: debug,
 });
