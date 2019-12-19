@@ -44,7 +44,6 @@ export default {
     async getGood() {
       let data = await this.api.get('/goods/index');
       this.mainMenuList = data.data;
-      console.log(this.mainMenuList);
     },
     onSearch: function() {
       this.value = "";

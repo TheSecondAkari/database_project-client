@@ -3,7 +3,7 @@
     <div style="background-color: orange">
       <van-nav-bar title="购物车" />
       <van-list style="padding-bottom:30%;">
-        <van-list class="order-css" v-for="item in list" :key="item.name">
+        <van-list class="order-css" v-for="(item) in list" :key="item.name">
           <div class="shop">
             <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
             <div style="width:70%">
@@ -12,7 +12,7 @@
           </div>
           <van-card
             class="card"
-            v-for="good in item.goods"
+            v-for="(good) in item.goods"
             :key="good.id"
             :num="1"
             :price="good.price"
@@ -20,12 +20,15 @@
             :title="good.name"
             :thumb="good.img"
           >
-            <van-checkbox
-              v-model="good.add"
+          <Checkbox v-bind:value="good['add']" @on-change="getCart" slot="footer" ></Checkbox>
+            <!-- <van-checkbox
+              :id="item.name + '-' + index"
+              v-bind:value="getCart"
+              v-on:change="getCart"
               slot="footer"
               style="position: relative; left: 95%;"
-              @click="refresh"
-            ></van-checkbox>
+              @click="getCart"
+            ></van-checkbox> -->
           </van-card>
         </van-list>
       </van-list>
@@ -59,7 +62,7 @@ export default {
   data() {
     return {
       active_tag: 1,
-      list: []
+      list: [] //是否绑定为computed
     };
   },
   mounted() {
@@ -68,19 +71,26 @@ export default {
   computed: {
     total() {
       var total = 0;
-      this.list.forEach(v => {
-        v.goods.forEach(good => {
+      this.$store.getters.CartList.forEach(order => {
+        order.goods.forEach(good => {
           if (good.add) {
             total += Number(good.price);
           }
         });
       });
       return total;
+    },
+    cart: function() {
+      return function(idx, index) {
+        return this.list[idx].goods[index].add;
+      };
     }
   },
   methods: {
-    refresh() {
-      this.list.splice(0, 0);
+    getCart() {
+        this.$set(this.list[0].goods[0], "add", !this.list[0].goods[0].add);
+        this.list = [...this.list];
+        this.$store.commit("replaceCart", this.list);
     },
     submit() {
       var item = [];

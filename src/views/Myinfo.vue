@@ -115,6 +115,9 @@ export default {
   },
   mounted() {},
   computed: {
+        goodList() {
+      return this.$store.getters.MySold;
+    },
     username() {
       return this.$store.getters.UserName;
     },
