@@ -52,6 +52,7 @@ export default {
             this.$store.commit("getAddresses"); 
             this.$store.commit("getMySelling");
             this.$store.commit("getCategory");
+            this.$store.commit("getMySold");
 
             this.$router.push('/');
         }

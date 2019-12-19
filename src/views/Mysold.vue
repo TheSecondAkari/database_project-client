@@ -12,106 +12,160 @@
       <van-tabs v-model="active">
         <van-tab title="待发货">
           <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-            <van-card
-              v-for="(item,index) in goodList"
-              :key="item.goodId"
-              :num="item.goodNum"
-              :price="item.goodPrice"
-              :desc="item.goodDes"
-              :title="item.goodName"
-              thumb="https://img.yzcdn.cn/vant/t-thirt.jpg"
-            >
-              <div slot="tags">
-                <van-tag plain type="danger">{{item.goodTag}}</van-tag>
+            <van-cell class="order-css" v-for="(item,index) in goodList1" :key="item.orderId">
+              <div class="shop">
+                <van-image
+                  round
+                  width="2rem"
+                  height="2rem"
+                  src="https://img.yzcdn.cn/vant/cat.jpeg"
+                />
+                <div style="width:70%">
+                  <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
+                  <!-- <div class="info">我卢本伟真TM没开挂！不信你们可以随便石锤我</div> -->
+                </div>
               </div>
-              <div slot="footer">
-                <van-button size="mini" type="danger" @click="check1(index)">查看</van-button>
-              </div>
-            </van-card>
-          </van-list>
-          <van-swipe-cell :on-close="onClose">
-            <template slot="left">
-              <van-button square type="primary" text="选择" />
-            </template>
-
-            <van-cell :border="false" title="单元格" value="内容" />
-
-            <template slot="right">
-              <van-button square type="danger" text="删除" />
-            </template>
-          </van-swipe-cell>
-
-          <van-action-sheet v-model="show1">
-            <p class="title">详情</p>
-            <p>商品信息</p>
-            <van-cell-group>
-              <van-cell title="商品名" :value="goodName" />
-              <van-cell title="价格" :value="goodPrice" />
-              <van-cell title="标签" :value="goodTag" />
-            </van-cell-group>
-            <p>交易信息</p>
-            <van-cell-group>
-              <van-cell title="收货人" :value="receName" />
-              <van-cell title="电话" :value="recePhon" />
-              <van-cell title="收货地址" :value="recePos" />
-            </van-cell-group>
-            <van-cell-group>
-              <van-button type="default" style="width:50%" @click="show1=false">关闭</van-button>
-              <van-button type="primary" style="width:50%" @click="sentConfirm()">确认发货</van-button>
-            </van-cell-group>
-          </van-action-sheet>
-        </van-tab>
-        <van-tab title="已发货">
-          <div class="list">
-            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
               <van-card
-                v-for="(item,index) in goodList"
-                :key="item.goodId"
-                :num="item.goodNum"
-                :price="item.goodPrice"
-                :desc="item.goodDes"
-                :title="item.goodName"
-                thumb="https://img.yzcdn.cn/vant/t-thirt.jpg"
+                class="card"
+                v-for="good in item.goodsList"
+                :key="good.goodId"
+                :num="1"
+                :price="good.price"
+                :desc="good.detail"
+                :title="good.goodName"
+                :thumb="good.img"
               >
                 <div slot="tags">
-                  <van-tag plain type="danger">{{item.goodTag}}</van-tag>
-                </div>
-                <div slot="footer">
-                  <van-button size="mini" type="danger" @click="check2(index)">查看</van-button>
+                  <van-tag plain type="danger">{{good.category.name}}</van-tag>
                 </div>
               </van-card>
-            </van-list>
-            <van-swipe-cell :on-close="onClose">
-              <template slot="left">
-                <van-button square type="primary" text="选择" />
-              </template>
-
-              <van-cell :border="false" title="单元格" value="内容" />
-
-              <template slot="right">
-                <van-button square type="danger" text="删除" />
-              </template>
-            </van-swipe-cell>
-
-            <van-action-sheet v-model="show2">
-              <p class="title">详情</p>
-              <p>商品信息</p>
-              <van-cell-group>
-                <van-cell title="商品名" :value="goodName" />
-                <van-cell title="价格" :value="goodPrice" />
-                <van-cell title="标签" :value="goodTag" />
-              </van-cell-group>
-              <p>交易信息</p>
-              <van-cell-group>
-                <van-cell title="收货人" :value="receName" />
-                <van-cell title="电话" :value="recePhon" />
-                <van-cell title="收货地址" :value="recePos" />
-              </van-cell-group>
-              <van-cell-group>
-                <van-button type="default" style="width:100%" @click="show2=false">关闭</van-button>
-              </van-cell-group>
-            </van-action-sheet>
-          </div>
+              <van-cell :value="item.receive.phone">
+                <!-- 使用 title 插槽来自定义标题 -->
+                <template slot="title">
+                  <van-tag round size="medium" type="primary">收</van-tag>
+                  <span style="margin-left:4%">{{item.receive.name}}</span>
+                </template>
+                <template slot="label">
+                  <span>
+                    {{ item.receive.province +
+                    item.receive.city +
+                    item.receive.county
+                    }}
+                  </span>
+                  <p style="margin:5px 0px 5px 0px">{{item.receive.detail}}</p>
+                </template>
+              </van-cell>
+              <!-- <div style="color:gray;font-size:11px;margin-left:4%">
+                <p>下单时间：2019-12-12 12:56:23</p>
+                <p>订单号：123456789123456789</p>
+              </div>-->
+              <van-button type="danger" @click="sendConfirm(index)">确认发货</van-button>
+            </van-cell>
+          </van-list>
+        </van-tab>
+        <van-tab title="待收货">
+          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+            <van-cell class="order-css" v-for="item in goodList2" :key="item.orderId">
+              <div class="shop">
+                <van-image
+                  round
+                  width="2rem"
+                  height="2rem"
+                  src="https://img.yzcdn.cn/vant/cat.jpeg"
+                />
+                <div style="width:70%">
+                  <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
+                  <!-- <div class="info">我卢本伟真TM没开挂！不信你们可以随便石锤我</div> -->
+                </div>
+              </div>
+              <van-card
+                class="card"
+                v-for="good in item.goodsList"
+                :key="good.goodId"
+                :num="1"
+                :price="good.price"
+                :desc="good.detail"
+                :title="good.goodName"
+                :thumb="good.img"
+              >
+                <div slot="tags">
+                  <van-tag plain type="danger">{{good.category.name}}</van-tag>
+                </div>
+              </van-card>
+              <van-cell :value="item.receive.phone">
+                <!-- 使用 title 插槽来自定义标题 -->
+                <template slot="title">
+                  <van-tag round size="medium" type="primary">收</van-tag>
+                  <span style="margin-left:4%">{{item.receive.name}}</span>
+                </template>
+                <template slot="label">
+                  <span>
+                    {{ item.receive.province +
+                    item.receive.city +
+                    item.receive.county
+                    }}
+                  </span>
+                  <p style="margin:5px 0px 5px 0px">{{item.receive.detail}}</p>
+                </template>
+              </van-cell>
+              <!-- <div style="color:gray;font-size:11px;margin-left:4%">
+                <p>下单时间：2019-12-12 12:56:23</p>
+                <p>订单号：123456789123456789</p>
+              </div>-->
+            </van-cell>
+          </van-list>
+        </van-tab>
+        <van-tab title="已收货">
+          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+            <van-cell class="order-css" v-for="item in goodList3" :key="item.orderId">
+              <div class="shop">
+                <van-image
+                  round
+                  width="2rem"
+                  height="2rem"
+                  src="https://img.yzcdn.cn/vant/cat.jpeg"
+                />
+                <div style="width:70%">
+                  <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
+                  <!-- <div class="info">我卢本伟真TM没开挂！不信你们可以随便石锤我</div> -->
+                </div>
+              </div>
+              <van-card
+                class="card"
+                v-for="good in item.goodsList"
+                :key="good.goodId"
+                :num="1"
+                :price="good.price"
+                :desc="good.detail"
+                :title="good.goodName"
+                :thumb="good.img"
+              >
+                <div slot="tags">
+                  <van-tag plain type="danger">{{good.category.name}}</van-tag>
+                </div>
+              </van-card>
+              <van-cell :value="item.receive.phone">
+                <!-- 使用 title 插槽来自定义标题 -->
+                <template slot="title">
+                  <van-tag round size="medium" type="primary">收</van-tag>
+                  <span style="margin-left:4%">{{item.receive.name}}</span>
+                </template>
+                <template slot="label">
+                  <span>
+                    {{ item.receive.province +
+                    item.receive.city +
+                    item.receive.county
+                    }}
+                  </span>
+                  <p style="margin:5px 0px 5px 0px">{{item.receive.detail}}</p>
+                </template>
+              </van-cell>
+              <!-- <div style="color:gray;font-size:11px;margin-left:4%">
+                <p>下单时间：2019-12-12 12:56:23</p>
+                <p>订单号：123456789123456789</p>
+              </div>-->
+            </van-cell>
+          </van-list>
         </van-tab>
       </van-tabs>
     </div>
@@ -125,128 +179,54 @@ export default {
       active: "1",
       loading: false,
       finished: false,
-      show1: false,
-      show2: false,
-      goodIndex: "", //商品Index
-      goodName: "", //商品名
-      goodPrice: "", //商品价格
-      goodTag: "", //商品标签
-      goodDes: "", //商品描述
-      receName: "", //收货人
-      recePhon: "", //收货人手机
-      recePos: "", //收货人地点
-      fileList: [
-        { url: "https://img.yzcdn.cn/vant/leaf.jpg" },
-        // Uploader 根据文件后缀来判断是否为图片文件
-        // 如果图片 URL 中不包含类型信息，可以添加 isImage 标记来声明
-        { url: "https://cloud-image", isImage: true }
-      ],
-      goodList: [
-        {
-          goodId: "1",
-          goodNum: "1",
-          goodName: "建良原味T恤1",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味",
-          receName: "陈建良1",
-          recePhon: "64551",
-          recePos: "xxxxxxxxx"
-        },
-        {
-          goodId: "2",
-          goodNum: "1",
-          goodName: "建良原味T恤2",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味",
-          receName: "陈建良2",
-          recePhon: "64552",
-          recePos: "xxxxxxxxx"
-        },
-        {
-          goodId: "3",
-          goodNum: "1",
-          goodName: "建良原味T恤3",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味",
-          receName: "陈建良3",
-          recePhon: "64553",
-          recePos: "xxxxxxxxx"
-        },
-        {
-          goodId: "4",
-          goodNum: "1",
-          goodName: "建良原味T恤4",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味",
-          receName: "陈建良4",
-          recePhon: "64554",
-          recePos: "xxxxxxxxx"
-        },
-        {
-          goodId: "5",
-          goodNum: "1",
-          goodName: "建良原味T恤5",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味",
-          receName: "陈建良5",
-          recePhon: "64555",
-          recePos: "xxxxxxxxx"
-        }
-      ]
+      orderId: "",
+      goodList1: [],
+      goodList2: [],
+      goodList3: []
     };
   },
+  computed: {
+    goodList() {
+      return this.$store.getters.MySold;
+    }
+  },
+  mounted() {
+    this.getList();
+  },
   methods: {
-    onClose(clickPosition, instance) {
-      switch (clickPosition) {
-        case "left":
-        case "cell":
-        case "outside":
-          instance.close();
-          break;
-        case "right":
-          this.confirm({
-            message: "确定删除吗？"
-          }).then(() => {
-            instance.close();
-          });
-          break;
+    getList() {
+      for (var i = 0; i < this.goodList.length; i++) {
+        if (this.goodList[i].status == "未发货")
+          this.goodList1.push(this.goodList[i]);
+        else if (this.goodList[i].status == "已发货")
+          this.goodList2.push(this.goodList[i]);
+        else if (this.goodList[i].status == "已收货")
+          this.goodList3.push(this.goodList[i]);
       }
     },
-    check1(index) {
-      this.show1 = true;
-      this.goodName = this.goodList[index].goodName;
-      this.goodPrice = this.goodList[index].goodPrice;
-      this.goodTag = this.goodList[index].goodTag;
-      this.receName = this.goodList[index].receName;
-      this.recePhon = this.goodList[index].recePhon;
-      this.recePos = this.goodList[index].recePos;
-      this.goodIndex = index;
-    },
-    check2(index) {
-      this.show2 = true;
-      this.goodName = this.goodList[index].goodName;
-      this.goodPrice = this.goodList[index].goodPrice;
-      this.goodTag = this.goodList[index].goodTag;
-      this.receName = this.goodList[index].receName;
-      this.recePhon = this.goodList[index].recePhon;
-      this.recePos = this.goodList[index].recePos;
-      this.goodIndex = index;
-    },
-    sentConfirm() {
+    sendConfirm(index) {
       this.$dialog
         .confirm({
           title: "",
           message: "是否确认已发货？"
         })
-        .then(() => {
-          this.goodList[this.goodIndex].goodName = this.goodName;
-          this.goodList[this.goodIndex].goodPrice = this.goodPrice;
-          this.goodList[this.goodIndex].goodTag = this.goodTag;
+        .then(async () => {
+          
+          let data = await this.api.put(
+            "/order/" + this.goodList1[index].orderId + "/state",
+            { state: 2 }
+          );
+          if (data.status >= 200 && data.status < 300) {
+            this.$notify({ type: "success", message: "发货成功" });
+
+            this.goodList1 = [];
+            this.goodList2 = [];
+            this.goodList3 = [];
+            this.$store.commit("getMySold");
+            this.getList();
+            
+          }
+          
           // on confirm
         })
         .catch(() => {
@@ -289,5 +269,27 @@ export default {
 }
 .title {
   text-align: center;
+}
+.card {
+  text-align: left;
+}
+.order-css {
+  overflow: hidden;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(238, 189, 125);
+  border-radius: 10px;
+  background-color: white;
+  margin: 5px 0px 5px 0px;
+}
+.shop {
+  width: 95%;
+  margin-top: 3px;
+  margin-left: 2.5%;
+  display: flex;
+  flex-direction: row;
+}
+.mysold {
+  background-color: rgb(252, 196, 76);
 }
 </style>

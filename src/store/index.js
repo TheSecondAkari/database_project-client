@@ -14,6 +14,7 @@ const store = new Vuex.Store({
         addressList: [],
         category: [],
         myselling: [],
+        myselling1: [],
         myselling_has_next: false,
         myselling_next_num: null,
         mysold: [],
@@ -38,6 +39,7 @@ const store = new Vuex.Store({
         CartList: state => {
             return state.cartList;
         },
+
     },
     mutations: {
         logout(state) { //登出按钮触发，还需继续补全，登出后，所有的状态都要初始化，购物车，自己的商品，订单等等
@@ -112,7 +114,44 @@ const store = new Vuex.Store({
                     });
                 state.myselling = tempList;
             }
-        }
+        },
+        async getMySold(state) {
+            let data = await api.get("/sold/orders");
+            
+            if (data.status >= 200 && data.status < 300) {
+                console.log(data.data.items);
+                data = data.data.items;
+                var tempList = [];
+                for (var i = 0; i < data.length; i++) {
+                    var itemList=[];
+                    for(var j = 0; j < data[i].item.length; j++)
+                    {
+                        
+                        itemList.push({
+                            goodId:data[i].item[j].id,
+                            goodName: data[i].item[j].goods.name,
+                            price: data[i].item[j].goods.price,
+                            detail: data[i].item[j].goods.detail,
+                            img: data[i].item[j].goods.img,
+                            category: data[i].item[j].goods.category,
+                            
+                        });
+
+                    }
+                    tempList.push({
+                        orderId:data[i].id,
+                        status: data[i].state,
+                        receive: data[i].address,
+                        goodsList:itemList
+                        
+                    })
+                
+                }
+
+                state.mysold = tempList;
+                
+            }
+        },
     },
     //   strict: debug,
 });

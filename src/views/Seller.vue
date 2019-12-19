@@ -64,11 +64,13 @@
                       <span style="font-weight:bold">无评论</span>
                     </div>
                   </van-cell>
-                  <van-cell v-else class="comment"  >
+                  <van-cell v-else class="comment">
                     <div>
-                        
-                      <router-link to="/myinfo" style="font-weight:bold;margin-right:2%" >{{item.commentNam}}</router-link>
-                      <span style="font-weight:bold"  >评论了:</span>
+                      <router-link
+                        to="/myinfo"
+                        style="font-weight:bold;margin-right:2%"
+                      >{{item.commentNam}}</router-link>
+                      <span style="font-weight:bold">评论了:</span>
                       <span>{{item.commentCon}}</span>
                     </div>
                   </van-cell>
@@ -89,15 +91,15 @@ export default {
       active: "1",
       loading: false,
       finished: false,
-      userName:"几把",//用户名
-    //   goodIndex: "", //商品Index
-    //   goodName: "", //商品名
-    //   goodPrice: "", //商品价格
-    //   goodTag: "", //商品标签
-    //   goodDes: "", //商品描述
-    //   commentId: "",
-    //   commrntNam: "",
-    //   commentCon: "",
+      userName: "几把", //用户名
+      //   goodIndex: "", //商品Index
+      //   goodName: "", //商品名
+      //   goodPrice: "", //商品价格
+      //   goodTag: "", //商品标签
+      //   goodDes: "", //商品描述
+      //   commentId: "",
+      //   commrntNam: "",
+      //   commentCon: "",
       goodList1: [
         {
           goodId: "1",
@@ -199,9 +201,15 @@ export default {
       ]
     };
   },
+  computed: {
+    goodList() {
+      return this.$store.getters.MySelling;
+    },
+    columns() {
+      return this.$store.getters.Category;
+    }
+  },
   methods: {
-
-
     jumpToGood(index) {
       this.$notify({ type: "success", message: "跳转成功" + index });
       this.$router.push("/myinfo");
@@ -237,7 +245,7 @@ export default {
 }
 .comment {
   background-color: rgb(233, 233, 233);
-  opacity:0.7;
+  opacity: 0.7;
   border-radius: 15px;
 }
 </style>
