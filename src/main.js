@@ -6,9 +6,12 @@ import 'vant/lib/index.css';
 import Routers from './router/index.js'
 import axios from 'axios';
 import store from './store/index.js'
+import ViewUI from 'view-design';
+import 'view-design/dist/styles/iview.css';
 
 Vue.use(Vant);
 Vue.use(VueRouter);
+Vue.use(ViewUI)
 Vue.config.productionTip = false
 
 const RouterConfig = {

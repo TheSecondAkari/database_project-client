@@ -18,6 +18,9 @@ const store = new Vuex.Store({
         myselling_next_num: null,
         mysold: [],
         cartList: [],
+        notsent: [],
+        untake: [],
+        taken: [],
     },
     getters: {
         UserName: state => {
@@ -38,8 +41,34 @@ const store = new Vuex.Store({
         CartList: state => {
             return state.cartList;
         },
+        NotSent: state => {
+            return state.notsent;
+        },
+        UnTake: state => {
+            return state.untake;
+        },
+        Taken: state => {
+            return state.taken;
+        },
     },
     mutations: {
+        setCartAdd(state, data) {
+            data = data.split('-')
+            console.log(data);
+            state.cartList.forEach(v => {
+                if (v.name == data[0]) {
+                    let temp = v.goods[parseInt(data[1])];
+                    temp.add = !temp.add;
+                    v.goods[parseInt(data[1])] = temp;
+                    console.log(v.goods[parseInt(data[1])].add);
+                }
+            });
+            console.log("购物车");
+            state.cartList = state.cartList.slice(0);
+        },
+        replaceCart(state, data) {
+            state.cartList = data;
+        },
         logout(state) { //登出按钮触发，还需继续补全，登出后，所有的状态都要初始化，购物车，自己的商品，订单等等
             state.user = {
                 id: 0,
@@ -144,7 +173,154 @@ const store = new Vuex.Store({
                     });
                 state.myselling = tempList;
             }
-        }
+        },
+        async getNotSent(state) {
+            let data = await api.get("/purchases", {
+                state: 1
+            });
+            if (data.status >= 200 && data.status < 300) {
+                // state.myselling_has_next = data.data.has_next;
+                // state.myselling_next_num = data.data.next_num;
+                data = data.data.items;
+                // console.log(data.length);
+                // console.log(data.item);
+                var tempList = [];
+                var tempListpart = []
+                for (var i = 0; i < data.length; i++) {
+                    for (var j = 0; j < data[i].item.length; j++) {
+                        tempListpart.push({
+                            id: data[i].item[j].goods.id,
+                            num: "1",
+                            price: data[i].item[j].goods.price,
+                            category: data[i].item[j].goods.category,
+                            desc: data[i].item[j].goods.detail,
+                            name: data[i].item[j].goods.name,
+                            img: data[i].item[j].goods.img,
+                            imgs: data[i].item[j].goods.imgs,
+                            sale: data[i].item[j].goods.sale
+                        });
+                    }
+                    if (data[i].address.city == data[i].address.province)
+                        data[i].address.desc = (data[i].address.city + data[i].address.county + data[i].address.detail);
+                    else
+                        data[i].address.desc = (data[i].address.province + data[i].address.city + data[i].address.county + data[i].address.detail);
+                    tempList.push({
+                        id: data[i].id,
+                        created_at: data[i].created_at,
+                        order_number: data[i].order_number,
+                        address: data[i].address,
+                        vendor: data[i].item[0].goods.vendor,
+                        goods: tempListpart
+                    });
+                }
+                state.notsent = tempList;
+            }
+        },
+        async getUnTake(state) {
+            let data = await api.get("/purchases", {
+                state: 2
+            });
+            if (data.status >= 200 && data.status < 300) {
+                // state.myselling_has_next = data.data.has_next;
+                // state.myselling_next_num = data.data.next_num;
+                data = data.data.items;
+                console.log("未收货订单", data);
+                // console.log(data.length);
+                // console.log(data.item);
+                var tempList = [];
+                var tempListpart = []
+                for (var i = 0; i < data.length; i++) {
+                    for (var j = 0; j < data[i].item.length; j++) {
+                        tempListpart.push({
+                            id: data[i].item[j].goods.id,
+                            num: "1",
+                            price: data[i].item[j].goods.price,
+                            category: data[i].item[j].goods.category,
+                            desc: data[i].item[j].goods.detail,
+                            name: data[i].item[j].goods.name,
+                            img: data[i].item[j].goods.img,
+                            imgs: data[i].item[j].goods.imgs,
+                            sale: data[i].item[j].goods.sale
+                        });
+                    }
+                    if (data[i].address.city == data[i].address.province)
+                        data[i].address.desc = (data[i].address.city + data[i].address.county + data[i].address.detail);
+                    else
+                        data[i].address.desc = (data[i].address.province + data[i].address.city + data[i].address.county + data[i].address.detail);
+                    tempList.push({
+                        id: data[i].id,
+                        created_at: data[i].created_at,
+                        order_number: data[i].order_number,
+                        address: data[i].address,
+                        vendor: data[i].item[0].goods.vendor,
+                        goods: tempListpart
+                    });
+                }
+                state.untake = tempList;
+                console.log("未收货订单获取后", tempList);
+            }
+        },
+        async getTaken(state) {
+            let data = await api.get("/purchases", {
+                state: 3
+            });
+            if (data.status >= 200 && data.status < 300) {
+                // state.myselling_has_next = data.data.has_next;
+                // state.myselling_next_num = data.data.next_num;
+                data = data.data.items;
+                console.log("已收货订单", data);
+                // console.log(data.length);
+                // console.log(data.item);
+                var tempList = [];
+                var tempListpart = []
+                for (var i = 0; i < data.length; i++) {
+                    for (var j = 0; j < data[i].item.length; j++) {
+                        tempListpart.push({
+                            id: data[i].item[j].goods.id,
+                            num: "1",
+                            price: data[i].item[j].goods.price,
+                            category: data[i].item[j].goods.category,
+                            desc: data[i].item[j].goods.detail,
+                            name: data[i].item[j].goods.name,
+                            img: data[i].item[j].goods.img,
+                            imgs: data[i].item[j].goods.imgs,
+                            sale: data[i].item[j].goods.sale
+                        });
+                    }
+                    if (data[i].address.city == data[i].address.province)
+                        data[i].address.desc = (data[i].address.city + data[i].address.county + data[i].address.detail);
+                    else
+                        data[i].address.desc = (data[i].address.province + data[i].address.city + data[i].address.county + data[i].address.detail);
+                    tempList.push({
+                        id: data[i].id,
+                        created_at: data[i].created_at,
+                        order_number: data[i].order_number,
+                        comment: data[i].comment,
+                        address: data[i].address,
+                        vendor: data[i].item[0].goods.vendor,
+                        goods: tempListpart
+                    });
+                }
+                state.taken = tempList;
+                console.log("已收货订单获取后", tempList);
+            }
+        },
+        //   address: {
+        //     name: "一号机",
+        //     phone: "12345678955",
+        //     desc: "北京市，西街，32号502" // 要合并
+        //   },
+        //   vendor:{},
+        //   goods: [
+        //     {
+        //       id: 23,
+        //       num: "1",
+        //       price: "5.00",
+        //       category:"",
+        //       desc: "穿了10年的纪念版",
+        //       title: "狗哥的皮大衣",
+        //       thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg"
+        //       imgs:[]
     },
     //   strict: debug,
 });

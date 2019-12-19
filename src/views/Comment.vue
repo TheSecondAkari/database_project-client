@@ -7,38 +7,39 @@
       @click-left="()=>{this.$router.push('/myinfo')}"
     />
     <van-list style="padding-bottom:5px;">
-      <van-list class="order-css" v-for="item in list" :key="item.orderid">
+      <van-list class="order-css" v-for="item in list" :key="item.id">
         <div class="shop">
           <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
           <div style="width:70%">
-            <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">超级加倍卢本伟！</div>
+            <div style="margin-left: 5%; margin-top:1.8%; font-weight: 600">{{item.vendor.name}}</div>
           </div>
         </div>
         <van-card
           class="card"
-          v-for="good in item.orders"
+          v-for="good in item.goods"
           :key="good.id"
           :num="good.num"
           :price="good.price"
           :desc="good.desc"
-          :title="good.title"
-          :thumb="good.thumb"
+          :title="good.name"
+          :thumb="good.img"
         />
-        <van-cell :value="item.address_id.phone">
+        <van-cell :value="item.address.phone">
           <!-- 使用 title 插槽来自定义标题 -->
           <template slot="title">
             <van-tag round size="medium" type="primary">收</van-tag>
-            <span style="margin-left:4%">{{item.address_id.name}}</span>
+            <span style="margin-left:4%">{{item.address.name}}</span>
           </template>
           <template slot="label">
-            <span>{{item.address_id.address}}</span>
+            <span>{{item.address.desc}}</span>
           </template>
         </van-cell>
         <div style="color:gray;font-size:11px;margin-left:4%">
-          <p>下单时间：2019-12-12 12:56:23</p>
-          <p>订单号：123456789123456789</p>
+          <p>下单时间：{{item.created_at}}</p>
+          <p>订单号：{{item.order_number}}</p>
         </div>
         <van-button
+          v-if="item.comment == null"
           plain
           size="small"
           type="info"
@@ -46,6 +47,9 @@
           style="margin:0px 2.5% 2.5% 75%;"
           @click="comment"
         >评价</van-button>
+
+        <van-cell v-else title="评价" :label="item.comment.content" />
+
         <van-popup v-model="show" position="bottom" autosize>
           <van-field
             v-model="message"
@@ -53,11 +57,17 @@
             label="评价"
             type="textarea"
             maxlength="150"
-            placeholder="请输入评价"
+            placeholder="请输入评价,输入为空，则默认为优"
             show-word-limit
           />
           <van-button size="small" round style="margin-left: 2.5%" @click="clean">清空</van-button>
-          <van-button size="small" round style="margin-left: 55%" type="info" @click="comfirm">确认发布</van-button>
+          <van-button
+            size="small"
+            round
+            style="margin-left: 55%"
+            type="info"
+            @click="comfirm(item.id)"
+          >确认发布</van-button>
         </van-popup>
       </van-list>
     </van-list>
@@ -72,83 +82,37 @@ export default {
       show: false,
       loading: false,
       finished: false,
-      message: "",
-      list: [
-        {
-          orderid: 1,
-          address_id: {
-            name: "一号机",
-            phone: "12345678955",
-            address: "北京市，西街，32号502"
-          },
-          orders: [
-            {
-              id: 23,
-              num: "1",
-              price: "5.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg"
-            },
-            {
-              id: 3,
-              num: "1",
-              price: "15.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg"
-            }
-          ]
-        },
-        {
-          orderid: 55,
-          address_id: {
-            name: "er号机",
-            phone: "12345678956",
-            address: "上海市，西街，32号502"
-          },
-          orders: [
-            {
-              id: 83,
-              num: "1",
-              price: "2.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg"
-            }
-          ]
-        },
-        {
-          orderid: 11,
-          address_id: {
-            name: "嘿机",
-            phone: "12345677755",
-            address: "北京市，东街，后上大道西周街32号502"
-          },
-          orders: [
-            {
-              id: 203,
-              num: "1",
-              price: "50.00",
-              desc: "穿了10年的纪念版",
-              title: "狗哥的皮大衣",
-              thumb: "https://img.yzcdn.cn/vant/t-thirt.jpg"
-            }
-          ]
-        }
-      ]
+      message: ""
     };
+  },
+  computed: {
+    list() {
+      return this.$store.getters.Taken;
+    }
   },
   methods: {
     comment() {
       this.show = true;
     },
-    clean(){
-        this.message = "";
+    clean() {
+      this.message = "";
     },
-    comfirm(){
-
-    },
+    async comfirm(id) {
+      if (this.message == "") this.message = "评论为空，默认好评";
+      let data = await this.api.post("/comment", {
+        order_id: id,
+        content: this.message
+      });
+      if (data.status >= 200 && data.status < 300) {
+        this.$notify({
+          type: "success",
+          message: data.data.errmsg
+        });
+        this.$store.commit("getTaken");
+      }
+      this.message = "";
+      this.show = false;
+    }
   }
 };
 </script>
