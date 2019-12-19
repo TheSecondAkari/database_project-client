@@ -52,6 +52,50 @@ const store = new Vuex.Store({
             state.myselling = [];
             state.mysold = [];
         },
+        addCart(state, good) {
+            var list = [];
+            console.log(state.cartList)
+            if (state.cartList.length == 0) {
+                console.log(state.cartList)
+                list["name"] = good.vendor.name;
+                list["goods"] = [];
+                good["add"] = false;
+                list["goods"].push(good);
+                state.cartList.push(list);
+                return;
+            } else {
+                var mask = 1
+                state.cartList.forEach(v => {
+                    if (v.name == good.vendor.name) {
+                        mask = 0;
+                        var shit = 1;
+                        v.goods.forEach(item => {
+                            if (item.id == good.id) {
+                                shit = 0;
+                            }
+                        })
+                        if (shit) {
+                            good["add"] = false;
+                            v.goods.push(good);
+                        }
+                    }
+                })
+                if (mask) {
+                    list["name"] = good.vendor.name;
+                    list["goods"] = [];
+                    good["add"] = false;
+                    list["goods"].push(good);
+                    state.cartList.push(list);
+                    console.log(state.cartList)
+                }
+            }
+        },
+        cleanCartList(state) {
+            state.cartList.length = 0;
+        },
+        setCartList(state, list){
+            state.cartList = list
+        },
         async getMyInfo(state) {
             let data = await api.get('/user');
             state.user = data.data;
