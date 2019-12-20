@@ -67,6 +67,8 @@ export default {
   },
   mounted() {
     this.list = this.$store.getters.CartList;
+    console.log("cart")
+    console.log(this.$store.getters.CartList)
   },
   computed: {
     total() {

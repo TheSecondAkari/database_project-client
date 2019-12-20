@@ -69,7 +69,7 @@ export default {
         if (this.mainList.length == this.imgs.length) {
           this.finished = true;
         }
-      }, 1000);
+      }, 100);
     },
     getImagelist: function() {
       var index = this.index;
@@ -93,7 +93,6 @@ export default {
           item = element
         }
       });
-      console.log(item)
       this.$router.push({
         path: "/good",
         query: {

@@ -90,16 +90,13 @@ const store = new Vuex.Store({
     mutations: {
         setCartAdd(state, data) {
             data = data.split('-')
-            console.log(data);
             state.cartList.forEach(v => {
                 if (v.name == data[0]) {
                     let temp = v.goods[parseInt(data[1])];
                     temp.add = !temp.add;
                     v.goods[parseInt(data[1])] = temp;
-                    console.log(v.goods[parseInt(data[1])].add);
                 }
             });
-            console.log("购物车");
             state.cartList = state.cartList.slice(0);
         },
         replaceCart(state, data) {
@@ -122,6 +119,8 @@ const store = new Vuex.Store({
 
             state.myselling_has_next = false;
             state.myselling_next_num = null;
+            state.mysold_has_next = false;
+            state.mysold_next_num = null;
             state.notsent_has_next = false;
             state.notsent_next_num = null;
             state.untake_has_next = false;
@@ -130,12 +129,13 @@ const store = new Vuex.Store({
             state.taken_next_num = null;
 
             state.myGoodsLoading = false;
+            state.mysoldLoading = false;
             state.notsentLoading = false;
             state.untakeLoading = false;
             state.takenLoading = false;
         },
         addCart(state, good) {
-            var list = [];
+            var list = {};
             if (state.cartList.length == 0) {
                 list["name"] = good.vendor.name;
                 list["goods"] = [];
@@ -240,6 +240,7 @@ const store = new Vuex.Store({
         },
         async getMoreMySelling(state) {
             if (state.myselling_has_next == true) {
+                state.myselling_has_next = false;
                 let data = await api.get("/my_goods", {
                     page: state.myselling_next_num
                 });
@@ -261,8 +262,9 @@ const store = new Vuex.Store({
                         });
                     state.myselling = state.myselling.concat(tempList);
                 }
+                state.myGoodsLoading = false;
             }
-            state.myGoodsLoading = false;
+            
         },
         async getMySold(state) {
             let data = await api.get("/sold/orders");
@@ -304,6 +306,7 @@ const store = new Vuex.Store({
         },
         async getMoreMySold(state) {
             if (state.mysold_has_next == true) {
+                state.mysold_has_next = false;
                 let data = await api.get("/sold/orders",{
                     page:state.mysold_next_num
                 });
@@ -379,6 +382,7 @@ const store = new Vuex.Store({
         },
         async getMoreNotSent(state) {
             if (state.notsent_has_next == true) {
+                state.notsent_has_next = false;
                 let data = await api.get("/purchases", {
                     state: 1,
                     page: state.notsent_next_num
@@ -466,6 +470,7 @@ const store = new Vuex.Store({
         },
         async getMoreUnTake(state) {
             if (state.untake_has_next == true) {
+                state.untake_has_next =false;
                 let data = await api.get("/purchases", {
                     state: 2,
                     page: state.untake_next_num
@@ -554,6 +559,7 @@ const store = new Vuex.Store({
         },
         async getMoreTaken(state) {
             if (state.taken_has_next == true) {
+                state.taken_has_next =false;
                 let data = await api.get("/purchases", {
                     state: 3,
                     page: state.taken_next_num

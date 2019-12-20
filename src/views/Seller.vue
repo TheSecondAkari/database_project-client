@@ -106,6 +106,7 @@ export default {
 
       hisSelling_loading: false,
       hisSelling_finished: false,
+
       hisSold_loading: false,
       hisSold_finished: false,
 
@@ -141,6 +142,7 @@ export default {
       data = data.data;
       this.hisSold_has_next = data.has_next;
       this.hisSold_next_num = data.next_num;
+      console.log(this.hisSold_has_next,this.hisSold_next_num)
       this.hisSold = data.items;
     }
   },
@@ -157,6 +159,7 @@ export default {
     },
     async getMoreHisSelling() {
       if (this.hisSelling_has_next == true) {
+          this.hisSelling_has_next = false;
         let data = await this.api.get("user/goods", {
           user_id: this.user_id,
           page: this.hisSelling_next_num
@@ -175,6 +178,7 @@ export default {
     },
     async getMoreHisSold() {
       if (this.hisSold_has_next == true) {
+          this.hisSold_has_next = false;
         let data = await this.api.get("user/orders", {
           user_id: this.user_id,
           page: this.hisSold_next_num
@@ -186,7 +190,8 @@ export default {
           this.hisSold = this.hisSold.concat(data.items);
         }
         this.hisSold_loading = false;
-      } else {
+      } 
+      else {
         this.hisSold_finished = true;
         this.hisSelling_loading = false;
       }

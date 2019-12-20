@@ -11,7 +11,7 @@
     <div class="list">
       <van-tabs v-model="active">
         <van-tab title="待发货">
-          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+          <van-list v-model="loading" :finished="finished" :immediate-check="false" finished-text="没有更多了" @load="onLoad">
             <van-cell class="order-css" v-for="(item,index) in goodList1" :key="item.orderId">
               <div class="shop">
                 <van-image
@@ -71,7 +71,7 @@
           </van-list>
         </van-tab>
         <van-tab title="待收货">
-          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+          <van-list v-model="loading" :finished="finished" :immediate-check="false" finished-text="没有更多了" @load="onLoad">
             <van-cell class="order-css" v-for="item in goodList2" :key="item.orderId">
               <div class="shop">
                 <van-image
@@ -123,7 +123,7 @@
           </van-list>
         </van-tab>
         <van-tab title="已收货">
-          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+          <van-list v-model="loading" :finished="finished" :immediate-check="false" finished-text="没有更多了" @load="onLoad">
             <van-cell class="order-css" v-for="item in goodList3" :key="item.orderId">
               <div class="shop">
                 <van-image
@@ -186,7 +186,6 @@ export default {
   data() {
     return {
       active: "1",
-      loading: false,
       finished: false,
       orderId: "",
       userName: ""
@@ -195,6 +194,14 @@ export default {
   computed: {
     goodList() {
       return this.$store.getters.MySold;
+    },
+    loading: {
+      get() {
+        return this.$store.getters.MyGoodsLoading;
+      },
+      set(value) {
+        this.$store.commit("closeMySoldLoading", value);
+      }
     },
     goodList1() {
       var temp = [];
@@ -230,11 +237,8 @@ export default {
           );
           if (data.status >= 200 && data.status < 300) {
             this.$notify({ type: "success", message: "发货成功" });
-            console.log(this.goodList2);
             this.$store.commit("getMySold");
-            console.log(this.goodList);
             this.getList();
-            console.log(this.goodList2);
           }
 
           // on confirm
@@ -245,19 +249,10 @@ export default {
         });
     },
     onLoad() {
-      // 异步更新数据
-      setTimeout(() => {
-        // for (let i = 0; i < 10; i++) {
-        //   this.list.push(this.list.length + 1);
-        // }
-        // // 加载状态结束
-        this.loading = false;
-        // 数据全部加载完成
-        // if (this.list.length >= 40) {
-        this.finished = true;
-        // }
-      }, 500);
-    }
+      this.$store.commit("getMoreMySold");
+      if (this.$store.state.mysold_has_next == false) this.finished = true;
+    },
+    
   }
 };
 </script>
