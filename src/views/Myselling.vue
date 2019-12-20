@@ -233,12 +233,16 @@ export default {
             this.editshow = false;
             this.editfileList = [];
             this.file_index = 1;
+            this.goodTag = "";
+            this.goodTagId = "";
             // on confirm
           })
           .catch(() => {
             this.editshow = false;
             this.editfileList = [];
             this.file_index = 1;
+            this.goodTag = "";
+            this.goodTagId = "";
             // on cancel
           });
       }
@@ -246,6 +250,8 @@ export default {
     canceledit() {
       this.editshow = false;
       this.editfileList = [];
+      this.goodTag = "";
+      this.goodTagId = "";
     },
     deleteConfirm(index) {
       this.$dialog
@@ -261,11 +267,17 @@ export default {
           }
           this.editshow = false;
           this.editfileList = [];
+          this.file_index = 1;
+          this.goodTag = "";
+          this.goodTagId = "";
           // on confirm
         })
         .catch(() => {
           this.editshow = false;
           this.editfileList = [];
+          this.file_index = 1;
+          this.goodTag = "";
+          this.goodTagId = "";
           // on cancel
         });
     },
@@ -324,14 +336,24 @@ export default {
             }
             this.addshow = false;
             this.addfileList = [];
+            // this.addgoodName = "";
+            // this.addgoodPrice = "";
+            // this.addgoodDetail = "";
             this.file_index = 1;
+            this.goodTagId = "";
+            this.goodTag = "";
             // on confirm
           })
           .catch(e => {
             console.log(e);
             this.addshow = false;
             this.addfileList = [];
+            this.addgoodName = "";
+            this.addgoodPrice = "";
+            this.addgoodDetail = "";
             this.file_index = 1;
+            this.goodTag = "";
+            this.goodTagId = "";
             // on cancel
           });
       }
@@ -339,6 +361,12 @@ export default {
     canceladd() {
       this.addshow = false;
       this.addfileList = [];
+      this.addgoodName = "";
+      this.addgoodPrice = "";
+      this.addgoodDetail = "";
+      this.file_index = 1;
+      this.goodTag = "";
+      this.goodTagId = "";
     },
     onConfirm(value, index) {
       this.goodTag = value;

@@ -66,7 +66,7 @@ export default {
     },
     loading: {
       get() {
-        return this.$store.gettersNotSentLoading;
+        return this.$store.getters.NotSentLoading;
       },
       set(value) {
         this.$store.commit("closeNotSentLoading", value);

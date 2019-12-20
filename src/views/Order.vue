@@ -109,6 +109,8 @@ export default {
       });
       console.log(data);
       this.$toast("下单成功！");
+      this.$store.commit("getNotSent");
+      
       this.$router.push("/");
     }
   }
