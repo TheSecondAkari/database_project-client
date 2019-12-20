@@ -107,7 +107,6 @@ export default {
       name: "",
       old_password: "",
       new_password: "",
-      errmsg: "",
       modify: true,
       active_tag: 2,
       activeNames: []
@@ -115,7 +114,7 @@ export default {
   },
   mounted() {},
   computed: {
-        goodList() {
+    goodList() {
       return this.$store.getters.MySold;
     },
     username() {
@@ -134,10 +133,16 @@ export default {
     },
     async modifyName() {
       var that = this;
-      await this.api.put("/user", {
+      let data = await this.api.put("/user", {
         name: that.name
       });
-      this.$store.commit("getMyInfo");
+      if (data.status >= 200 && data.status < 300) {
+        this.$notify({
+          type: "success",
+          message: data.data.errmsg
+        });
+        this.$store.commit("getMyInfo");
+      }
       this.modify = true;
     },
     cancel: function() {
@@ -149,12 +154,15 @@ export default {
         old_password: that.old_password,
         password: that.new_password
       });
-      this.$store.commit("getMyInfo");
-      console.log(data);
+      if (data.status >= 200 && data.status < 300) {
+        this.$notify({
+          type: "success",
+          message: data.data.errmsg
+        });
+      }
       this.activeNames = [];
       this.old_password = "";
       this.new_password = "";
-      this.errmsg = "";
     },
     //登出账号
     logout() {

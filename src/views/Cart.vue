@@ -3,7 +3,7 @@
     <div style="background-color: orange">
       <van-nav-bar title="购物车" />
       <van-list style="padding-bottom:30%;">
-        <van-list class="order-css" v-for="(item) in list" :key="item.name">
+        <van-list class="order-css" v-for="(item, index) in list" :key="item.name">
           <div class="shop">
             <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
             <div style="width:70%">
@@ -12,7 +12,7 @@
           </div>
           <van-card
             class="card"
-            v-for="(good) in item.goods"
+            v-for="(good, idx) in item.goods"
             :key="good.id"
             :num="1"
             :price="good.price"
@@ -20,7 +20,11 @@
             :title="good.name"
             :thumb="good.img"
           >
-          <Checkbox v-bind:value="good['add']" @on-change="getCart" slot="footer" ></Checkbox>
+            <Checkbox
+              v-bind:value="good['add']"
+              @on-change="getCart(index, idx, $event)"
+              slot="footer"
+            ></Checkbox>
             <!-- <van-checkbox
               :id="item.name + '-' + index"
               v-bind:value="getCart"
@@ -28,7 +32,7 @@
               slot="footer"
               style="position: relative; left: 95%;"
               @click="getCart"
-            ></van-checkbox> -->
+            ></van-checkbox>-->
           </van-card>
         </van-list>
       </van-list>
@@ -67,6 +71,7 @@ export default {
   },
   mounted() {
     this.list = this.$store.getters.CartList;
+    console.log(this.list);
   },
   computed: {
     total() {
@@ -87,27 +92,31 @@ export default {
     }
   },
   methods: {
-    getCart() {
-        this.$set(this.list[0].goods[0], "add", !this.list[0].goods[0].add);
-        this.list = [...this.list];
-        this.$store.commit("replaceCart", this.list);
+    getCart(index, idx) {
+      this.$set(
+        this.list[index].goods[idx],
+        "add",
+        !this.list[index].goods[idx].add
+      );
+      this.list = [...this.list];
+      this.$store.commit("replaceCart", this.list);
     },
     submit() {
       var item = [];
       this.list.forEach(v => {
         v.goods.forEach(good => {
-          if(good.add){
-            item.push(good)
+          if (good.add) {
+            item.push(good);
           }
-        })
-      })
+        });
+      });
       this.$router.push({
         path: "/order",
         query: {
           type: 0,
-          goods: item,
+          goods: item
         }
-      })
+      });
     }
   }
 };

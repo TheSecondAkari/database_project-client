@@ -6,7 +6,14 @@
       left-arrow
       @click-left="()=>{this.$router.push('/myinfo')}"
     />
-    <van-list style="padding-bottom:5px;">
+    <van-list
+      style="padding-bottom:5px;"
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      :immediate-check="false"
+      @load="onLoad"
+    >
       <van-list class="order-css" v-for="item in list" :key="item.id">
         <div class="shop">
           <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
@@ -39,7 +46,14 @@
           <p>下单时间：{{item.created_at}}</p>
           <p>订单号：{{item.order_number}}</p>
         </div>
-        <van-button plain size="small" type="info" round style="margin:0px 2.5% 2.5% 75%;" @click="Confirm(item)">确认收货</van-button>
+        <van-button
+          plain
+          size="small"
+          type="info"
+          round
+          style="margin:0px 2.5% 2.5% 75%;"
+          @click="Confirm(item)"
+        >确认收货</van-button>
       </van-list>
     </van-list>
   </div>
@@ -50,27 +64,38 @@ export default {
   name: "notSent",
   data() {
     return {
-      loading: false,
-      finished: false,
+      finished: false
     };
   },
   computed: {
     list() {
       return this.$store.getters.UnTake;
+    },
+    loading: {
+      get() {
+        return this.$store.getters.UnTakeLoading;
+      },
+      set(value) {
+        this.$store.commit("closeUnTakeLoading", value);
+      }
     }
   },
   methods: {
-      async Confirm(item){
-          let data = await this.api.post('/order/'+item.id+'/receipt');
-          if (data.status >= 200 && data.status < 300) {
-                this.$notify({
-                  type: "success",
-                  message: data.data.errmsg
-                });
-                this.$store.commit("getUnTake");
-                this.$store.commit("getTaken");
-              }
+    async Confirm(item) {
+      let data = await this.api.post("/order/" + item.id + "/receipt");
+      if (data.status >= 200 && data.status < 300) {
+        this.$notify({
+          type: "success",
+          message: data.data.errmsg
+        });
+        this.$store.commit("getUnTake");
+        this.$store.commit("getTaken");
       }
+    },
+    onLoad() {
+      this.$store.commit("getMoreUnTake");
+      if (this.$store.state.untake_has_next == false) this.finished = true;
+    }
   }
 };
 </script>
@@ -100,5 +125,4 @@ export default {
   display: flex;
   flex-direction: row;
 }
-
 </style>

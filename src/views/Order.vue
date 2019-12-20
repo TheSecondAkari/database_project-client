@@ -58,17 +58,9 @@ export default {
         return this.$store.getters.AddressList[this.index];
       }
     },
-    goods_id() {
-      var goods_id = [];
-      console.log(this.goods);
-      this.goods.forEach(v => {
-        goods_id.push(v.id);
-      });
-      return goods_id;
-    },
     price() {
       var price = 0;
-      this.$store.state.cartList.forEach(v => {
+      this.list.forEach(v => {
         v.goods.forEach(good => {
           if (good.add) {
             price += good.price * 100;
@@ -79,8 +71,7 @@ export default {
     }
   },
   mounted() {
-    var type = this.$route.query.index;
-    console.log(JSON.parse(this.$route.query.goods))
+    var type = this.$route.query.type;
     switch (type) {
       case 0:
         this.list = this.$store.state.cartList;
@@ -90,7 +81,10 @@ export default {
         this.index = this.$route.query.index;
         break;
       case 2:
-        this.goods = JSON.parse(this.$route.query.goods);
+        this.list = JSON.parse(this.$route.query.goods);
+        this.goods = this.list[0].goods;
+        console.log(this.list)
+        console.log(this.goods)
         break;
     }
   },
@@ -107,17 +101,29 @@ export default {
       });
     },
     async submit() {
-      console.log("!!!!!!!");
+      var data = undefined;
+      var list = this.list;
       var address_id = this.address.id;
-      var goods_id = this.goods_id;
-      let data = await this.api.post("/orders", {
-        address_id: address_id,
-        goods_id: goods_id
-      });
-      console.log(data);
-      this.$toast(data.data.errmsg);
-      this.$store.commit("getNotSent");
-      this.$router.push("/");
+      for (var i = 0; i < list.length; i++) {
+        var goods_id = [];
+        this.goods.forEach(good => {
+          if (good.vendor.name == list[i].name) {
+            goods_id.push(good.id);
+          }
+        });
+        if (goods_id.length != 0) {
+          data = await this.api.post("/orders", {
+            address_id: address_id,
+            goods_id: goods_id
+          });
+        }
+      }
+      if (data.status == 200) {
+        this.$toast(data.data.errmsg);
+        this.$store.commit("getNotSent");
+        this.$store.commit("cleanCartAdd");
+        this.$router.push("/");
+      }
     }
   }
 };
