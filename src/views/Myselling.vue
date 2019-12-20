@@ -10,7 +10,13 @@
     />
     <div class="header"></div>
     <div class="list">
-      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        :immediate-check="false"
+        @load="onLoad"
+      >
         <van-card
           v-for="(item,index) in goodList"
           :key="item.id"
@@ -29,16 +35,6 @@
           </div>
         </van-card>
       </van-list>
-
-      <!-- <van-swipe-cell :on-close="onClose">
-        <template slot="left">
-          <van-button square type="primary" text="选择" />
-      </template>-->
-      <!-- <van-cell :border="false" title="单元格" value="内容" /> -->
-      <!-- <template slot="right">
-          <van-button square type="danger" text="删除" />
-        </template>
-      </van-swipe-cell>-->
 
       <!-- 修改商品信息 -->
       <van-action-sheet v-model="editshow">
@@ -132,7 +128,7 @@ export default {
     return {
       showPicker: false,
       file_index: 1,
-      loading: false,
+      //   loading: false,
       finished: false,
       editshow: false,
       addshow: false,
@@ -140,7 +136,7 @@ export default {
       editgoodName: "",
       editgoodPrice: "",
       goodTag: "",
-      goodTagId:"",
+      goodTagId: "",
       editgoodDetail: "",
       addgoodName: "",
       addgoodPrice: "",
@@ -163,25 +159,17 @@ export default {
     },
     columns() {
       return this.$store.getters.Category;
+    },
+    loading: {
+      get() {
+        return this.$store.getters.MyGoodsLoading;
+      },
+      set(value) {
+        this.$store.commit("closeMyGoodsLoading", value);
+      }
     }
   },
   methods: {
-    // onClose(clickPosition, instance) {
-    //   switch (clickPosition) {
-    //     case "left":
-    //     case "cell":
-    //     case "outside":
-    //       instance.close();
-    //       break;
-    //     case "right":
-    //       this.confirm({
-    //         message: "确定删除吗？"
-    //       }).then(() => {
-    //         instance.close();
-    //       });
-    //       break;
-    //   }
-    // },
     edit(index) {
       this.editfileList = [];
       this.editshow = true;
@@ -231,7 +219,7 @@ export default {
                   price: this.editgoodPrice,
                   detail: this.editgoodDetail,
                   imgs: images,
-                  category_id:this.goodTagId
+                  category_id: this.goodTagId
                 }
               );
               if (data.status >= 200 && data.status < 300) {
@@ -266,7 +254,6 @@ export default {
           message: "确认删除该商品？"
         })
         .then(async () => {
-          console.log(this.goodList[index].id);
           let data = await this.api.delete("/goods/" + this.goodList[index].id);
           if (data.status >= 200 && data.status < 300) {
             this.$notify({ type: "success", message: data.data.errmsg });
@@ -287,18 +274,8 @@ export default {
       return file;
     },
     onLoad() {
-      // 异步更新数据
-      setTimeout(() => {
-        // for (let i = 0; i < 10; i++) {
-        //   this.list.push(this.list.length + 1);
-        // }
-        // // 加载状态结束
-        this.loading = false;
-        // 数据全部加载完成
-        // if (this.list.length >= 40) {
-        this.finished = true;
-        // }
-      }, 500);
+      this.$store.commit("getMoreMySelling");
+      if (this.$store.state.myselling_has_next == false) this.finished = true;
     },
 
     //新添加的，
@@ -360,11 +337,10 @@ export default {
       }
     },
     canceladd() {
-      console.log(this.addfileList);
       this.addshow = false;
       this.addfileList = [];
     },
-    onConfirm(value,index) {
+    onConfirm(value, index) {
       this.goodTag = value;
       this.showPicker = false;
       this.goodTagId = index + 1;

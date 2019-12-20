@@ -17,7 +17,7 @@
       <div class="text" style="font-weight: 800; font-size: 18px;">{{good.name}}</div>
       <div class="br"></div>
       <van-tag mark style="margin:0 0 2.5% 2.5%">卖家</van-tag>
-      <div class="user">
+      <div class="user" @click="goToSeller">
         <van-image round width="60px" height="60px" src="https://img.yzcdn.cn/vant/cat.jpeg" />
         <div style="width:70%">
           <div style="margin-left: 5%; font-weight: 700">{{good.vendor.name}}</div>
@@ -74,7 +74,19 @@ export default {
     onAdd: function() {
       this.$toast("添加成功！")
       this.$store.commit("addCart", this.good)
-    }
+    },
+
+    goToSeller(){
+        var name = this.good.vendor.name
+        var id = this.good.vendor.id
+        this.$router.push({
+            path: "/seller",
+            query: {
+                name: name,
+                id: id,
+            }
+        })
+}
   }
 };
 </script>

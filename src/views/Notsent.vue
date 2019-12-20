@@ -6,7 +6,14 @@
       left-arrow
       @click-left="()=>{this.$router.push('/myinfo')}"
     />
-    <van-list style="padding-bottom:5px;">
+    <van-list
+      style="padding-bottom:5px;"
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      :immediate-check="false"
+      @load="onLoad"
+    >
       <van-list class="order-css" v-for="item in list" :key="item.id">
         <div class="shop">
           <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
@@ -50,16 +57,28 @@ export default {
   name: "notSent",
   data() {
     return {
-      loading: false,
       finished: false
     };
   },
   computed: {
     list() {
       return this.$store.getters.NotSent;
+    },
+    loading: {
+      get() {
+        return this.$store.gettersNotSentLoading;
+      },
+      set(value) {
+        this.$store.commit("closeNotSentLoading", value);
+      }
     }
   },
-  methods: {}
+  methods: {
+      onLoad() {
+      this.$store.commit("getMoreNotSent");
+      if (this.$store.state.notsent_has_next == false) this.finished = true;
+    },
+  }
 };
 </script>
 
@@ -88,5 +107,4 @@ export default {
   display: flex;
   flex-direction: row;
 }
-
 </style>
