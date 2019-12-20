@@ -80,16 +80,23 @@ export default {
   },
   mounted() {
     var type = this.$route.query.index;
-    if (type) {
-      this.index = this.$route.query.index;
-    } else {
-      this.list = this.$store.state.cartList;
-      this.goods = this.$route.query.goods;
+    console.log(JSON.parse(this.$route.query.goods))
+    switch (type) {
+      case 0:
+        this.list = this.$store.state.cartList;
+        this.goods = this.$route.query.goods;
+        break;
+      case 1:
+        this.index = this.$route.query.index;
+        break;
+      case 2:
+        this.goods = JSON.parse(this.$route.query.goods);
+        break;
     }
   },
   methods: {
     Back() {
-      this.$router.go(-1);
+      this.$router.push("/");
     },
     changeAddress() {
       this.$router.push({
@@ -108,7 +115,8 @@ export default {
         goods_id: goods_id
       });
       console.log(data);
-      this.$toast("下单成功！");
+      this.$toast(data.data.errmsg);
+      this.$store.commit("getNotSent");
       this.$router.push("/");
     }
   }

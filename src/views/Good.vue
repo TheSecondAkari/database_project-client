@@ -60,7 +60,18 @@ export default {
     },
 
     goToOrder: function() {
-      this.$router.push("/order");
+      var good = [];
+      good["name"] = this.good.vendor.name;
+      good["goods"] = [];
+      good["goods"].push(this.good);
+      // let data = JSON.stringify(good);
+      this.$router.push({
+        path: "/order",
+        query:{
+          index: 2,
+          goods: good,
+        }
+      });
     },
 
     onChange(index) {
