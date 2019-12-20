@@ -20,7 +20,11 @@
             :title="good.name"
             :thumb="good.img"
           >
-          <Checkbox v-bind:value="good['add']" @on-change="getCart(index, idx, $event)" slot="footer" ></Checkbox>
+            <Checkbox
+              v-bind:value="good['add']"
+              @on-change="getCart(index, idx, $event)"
+              slot="footer"
+            ></Checkbox>
             <!-- <van-checkbox
               :id="item.name + '-' + index"
               v-bind:value="getCart"
@@ -28,7 +32,7 @@
               slot="footer"
               style="position: relative; left: 95%;"
               @click="getCart"
-            ></van-checkbox> -->
+            ></van-checkbox>-->
           </van-card>
         </van-list>
       </van-list>
@@ -67,8 +71,6 @@ export default {
   },
   mounted() {
     this.list = this.$store.getters.CartList;
-    console.log("cart")
-    console.log(this.$store.getters.CartList)
   },
   computed: {
     total() {
@@ -90,26 +92,30 @@ export default {
   },
   methods: {
     getCart(index, idx) {
-        this.$set(this.list[index].goods[idx], "add", !this.list[index].goods[idx].add);
-        this.list = [...this.list];
-        this.$store.commit("replaceCart", this.list);
+      this.$set(
+        this.list[index].goods[idx],
+        "add",
+        !this.list[index].goods[idx].add
+      );
+      this.list = [...this.list];
+      this.$store.commit("replaceCart", this.list);
     },
     submit() {
       var item = [];
       this.list.forEach(v => {
         v.goods.forEach(good => {
-          if(good.add){
-            item.push(good)
+          if (good.add) {
+            item.push(good);
           }
-        })
-      })
+        });
+      });
       this.$router.push({
         path: "/order",
         query: {
           type: 0,
-          goods: item,
+          goods: item
         }
-      })
+      });
     }
   }
 };

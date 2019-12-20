@@ -15,7 +15,7 @@
         <van-swipe-item class="image" v-for="item in list" :key="item">{{item}}</van-swipe-item>
       </van-swipe>
     </div>
-    <waterfall :imgsArr="mainMenuList" v-if="mainMenuList.length > 0"/>
+    <waterfall :imgsArr="mainMenuList" v-if="mainMenuList.length > 0" />
     <van-tabbar v-model="active_tag" style="position: fixed; bottom: 0px;">
       <van-tabbar-item icon="home-o" to="/">主页</van-tabbar-item>
       <van-tabbar-item icon="cart-o" to="/cart">购物车</van-tabbar-item>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import waterfall from './Waterfall'
+import waterfall from "./Waterfall";
 
 export default {
   data() {
@@ -34,20 +34,26 @@ export default {
       active_type: 0,
       active_tag: 0,
       list: [1, 2, 3, 4],
-      mainMenuList: [],
+      mainMenuList: []
     };
   },
-  mounted: function(){
+  mounted: function() {
     this.getGood();
   },
   methods: {
     async getGood() {
-      let data = await this.api.get('/goods/index');
-      this.mainMenuList = data.data;
+      var list = this.$store.getters.MainMeau;
+      if (list.length == 0) {
+        let data = await this.api.get("/goods/index");
+        this.mainMenuList = data.data;
+        this.$store.commit("setMainMeau", data.data);
+      } else {
+        this.mainMenuList = list;
+      }
     },
     onSearch: function() {
       this.value = "";
-    },
+    }
   },
   components: {
     waterfall

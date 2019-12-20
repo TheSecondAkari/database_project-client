@@ -124,7 +124,7 @@ export default {
 .col {
   display: flex;
   flex-direction: column;
-  width: 46%;
+  width: 50%;
   padding: 0% 2%;
 }
 .card {

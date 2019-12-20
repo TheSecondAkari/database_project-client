@@ -14,6 +14,7 @@ const store = new Vuex.Store({
         addressList: [],
         category: [],
         cartList: [],
+        mainMeau: [],
 
         myselling: [],
         myselling_has_next: false,
@@ -48,6 +49,9 @@ const store = new Vuex.Store({
         },
         AddressList: state => {
             return state.addressList;
+        },
+        MainMeau: state => {
+            return state.mainMeau;
         },
         MySelling: state => {
             return state.myselling;
@@ -101,6 +105,9 @@ const store = new Vuex.Store({
         },
         replaceCart(state, data) {
             state.cartList = data;
+        },
+        setMainMeau(state, data) {
+            state.mainMeau = data;
         },
         logout(state) { //登出按钮触发，还需继续补全，登出后，所有的状态都要初始化，购物车，自己的商品，订单等等
             state.user = {
@@ -169,8 +176,19 @@ const store = new Vuex.Store({
                 }
             }
         },
-        cleanCartList(state) {
-            state.cartList.length = 0;
+        cleanCartAdd(state) {
+            for (var i = 0; i < state.cartList.length; i++) {
+                for (var j = 0; j < state.cartList[i].goods.length; j++) {
+                    if (state.cartList[i].goods[j].add == true) {
+                        state.cartList[i].goods.splice(j, 1);
+                        j--;
+                    }
+                }
+                if(state.cartList[i].goods.length == 0){
+                    state.cartList.splice(i,1);
+                    i--;
+                }
+            }
         },
         setCartList(state, list) {
             state.cartList = list
@@ -511,7 +529,7 @@ const store = new Vuex.Store({
                     }
                     state.untake = state.untake.concat(tempList);
                 }
-                
+
             }
             state.untakeLoading = false;
         },
@@ -601,7 +619,7 @@ const store = new Vuex.Store({
                     }
                     state.taken = state.taken.concat(tempList);
                 }
-                
+
             }
             state.takenLoading = false;
         },
