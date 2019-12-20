@@ -14,6 +14,7 @@ const store = new Vuex.Store({
         addressList: [],
         category: [],
         cartList: [],
+        mainMeau: [],
 
         myselling: [],
         myselling_has_next: false,
@@ -48,6 +49,9 @@ const store = new Vuex.Store({
         },
         AddressList: state => {
             return state.addressList;
+        },
+        MainMeau: state => {
+            return state.mainMeau;
         },
         MySelling: state => {
             return state.myselling;
@@ -104,6 +108,9 @@ const store = new Vuex.Store({
         },
         replaceCart(state, data) {
             state.cartList = data;
+        },
+        setMainMeau(state, data) {
+            state.mainMeau = data;
         },
         logout(state) { //登出按钮触发，还需继续补全，登出后，所有的状态都要初始化，购物车，自己的商品，订单等等
             state.user = {
