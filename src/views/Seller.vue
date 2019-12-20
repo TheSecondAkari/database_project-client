@@ -2,7 +2,7 @@
   <div class="myselling">
     <div class="header">
       <van-nav-bar
-        title="动态"
+        title="店家主页"
         left-text="返回"
         left-arrow
         @click-left="()=>{this.$router.push('/myinfo')}"
@@ -24,18 +24,24 @@
     <div class="list">
       <van-tabs v-model="active">
         <van-tab title="他发布的">
-          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+          <van-list
+            v-model="hisSelling_loading"
+            :finished="hisSelling_finished"
+            finished-text="没有更多了"
+            :immediate-check="false"
+            @load="onLoadSelling"
+          >
             <van-card
-              v-for="(item,index) in goodList1"
-              :key="item.goodId"
-              :num="item.goodNum"
-              :price="item.goodPrice"
-              :desc="item.goodDes"
-              :title="item.goodName"
-              thumb="https://img.yzcdn.cn/vant/t-thirt.jpg"
+              v-for="(item,index) in hisSelling"
+              :key="item.id"
+              num="1"
+              :price="item.price"
+              :desc="item.detail"
+              :title="item.name"
+              :thumb="item.img"
             >
               <div slot="tags">
-                <van-tag plain type="danger">{{item.goodTag}}</van-tag>
+                <van-tag plain type="danger">{{item.category.name}}</van-tag>
               </div>
               <div slot="footer">
                 <van-button size="mini" type="danger" @click="jumpToGood(index)">查看</van-button>
@@ -44,40 +50,48 @@
           </van-list>
         </van-tab>
         <van-tab title="他卖出的">
-          <div class="list">
-            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+          <van-list
+            style="padding-bottom:5px;"
+            v-model="hisSold_loading"
+            :finished="hisSold_finished"
+            :immediate-check="false"
+            finished-text="没有更多了"
+            @load="onLoadSold"
+          >
+            <van-list class="order-css" v-for="item in hisSold" :key="item.id">
+              <div style="color:gray;font-size:11px;margin-left:4%">
+                <p>下单时间：{{item.created_at}}</p>
+              </div>
               <van-card
-                v-for="item in goodList2"
-                :key="item.goodId"
-                :num="item.goodNum"
-                :price="item.goodPrice"
-                :desc="item.goodDes"
-                :title="item.goodName"
-                thumb="https://img.yzcdn.cn/vant/t-thirt.jpg"
+                class="card"
+                v-for="good in item.item"
+                :key="good.goods.id"
+                num="1"
+                :price="good.goods.price"
+                :desc="good.goods.detail"
+                :title="good.goods.name"
+                :thumb="good.goods.img"
               >
                 <div slot="tags">
-                  <van-tag plain type="danger">{{item.goodTag}}</van-tag>
-                </div>
-                <div slot="footer">
-                  <van-cell v-if="item.commentId==''" class="comment">
-                    <div>
-                      <span style="font-weight:bold">无评论</span>
-                    </div>
-                  </van-cell>
-                  <van-cell v-else class="comment">
-                    <div>
-                      <router-link
-                        to="/myinfo"
-                        style="font-weight:bold;margin-right:2%"
-                      >{{item.commentNam}}</router-link>
-                      <span style="font-weight:bold">评论了:</span>
-                      <span>{{item.commentCon}}</span>
-                    </div>
-                  </van-cell>
+                  <van-tag plain type="danger">{{good.goods.category.name}}</van-tag>
                 </div>
               </van-card>
+              <div>
+                <van-cell v-if="item.comment== null" class="comment">
+                  <div>
+                    <span style="font-weight:bold">无评论</span>
+                  </div>
+                </van-cell>
+                <van-cell v-else class="comment">
+                  <div>
+                    <p style="font-weight:500;margin-left:2%;float:left">"{{item.user.name}}"</p>
+                    <span style="margin-left:3%">评论了:</span>
+                    <span style="margin-left:3%">{{item.comment.content}}</span>
+                  </div>
+                </van-cell>
+              </div>
             </van-list>
-          </div>
+          </van-list>
         </van-tab>
       </van-tabs>
     </div>
@@ -89,124 +103,45 @@ export default {
   data() {
     return {
       active: "1",
-      loading: false,
-      finished: false,
-      userName: "几把", //用户名
-      //   goodIndex: "", //商品Index
-      //   goodName: "", //商品名
-      //   goodPrice: "", //商品价格
-      //   goodTag: "", //商品标签
-      //   goodDes: "", //商品描述
-      //   commentId: "",
-      //   commrntNam: "",
-      //   commentCon: "",
-      goodList1: [
-        {
-          goodId: "1",
-          goodNum: "1",
-          goodName: "建良原味T恤1",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味"
-        },
-        {
-          goodId: "2",
-          goodNum: "1",
-          goodName: "建良原味T恤2",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味"
-        },
-        {
-          goodId: "3",
-          goodNum: "1",
-          goodName: "建良原味T恤3",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味"
-        },
-        {
-          goodId: "4",
-          goodNum: "1",
-          goodName: "建良原味T恤4",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味"
-        },
-        {
-          goodId: "5",
-          goodNum: "1",
-          goodName: "建良原味T恤5",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味"
-        }
-      ],
-      goodList2: [
-        {
-          goodId: "1",
-          goodNum: "1",
-          goodName: "建良原味T恤1",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味",
-          commentId: "1",
-          commentNam: "几把",
-          commentCon: "这就是建良的衣服吗，真是有够好笑呢"
-        },
-        {
-          goodId: "2",
-          goodNum: "1",
-          goodName: "建良原味T恤2",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味",
-          commentId: "1",
-          commentNam: "几把",
-          commentCon: ""
-        },
-        {
-          goodId: "3",
-          goodNum: "1",
-          goodName: "建良原味T恤3",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味",
-          commentId: "",
-          commentNam: "几把",
-          commentCon: "这就是建良的衣服吗，真是有够好笑呢"
-        },
-        {
-          goodId: "4",
-          goodNum: "1",
-          goodName: "建良原味T恤4",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味",
-          commentId: "1",
-          commentNam: "几把",
-          commentCon: "还好吧"
-        },
-        {
-          goodId: "5",
-          goodNum: "1",
-          goodName: "建良原味T恤5",
-          goodPrice: "10.1",
-          goodTag: "服装",
-          goodDes: "有内味",
-          commentId: "1",
-          commentNam: "几把",
-          commentCon: "这软件太难用了"
-        }
-      ]
+
+      hisSelling_loading: false,
+      hisSelling_finished: false,
+      hisSold_loading: false,
+      hisSold_finished: false,
+
+      hisSelling_has_next: false,
+      hisSold_has_next: false,
+      hisSelling_next_num: 1,
+      hisSold_next_num: 1,
+
+      userName: "",
+      user_id: "",
+      hisSelling: [],
+      hisSold: []
     };
   },
-  computed: {
-    goodList() {
-      return this.$store.getters.MySelling;
-    },
-    columns() {
-      return this.$store.getters.Category;
+  async mounted() {
+    this.userName = this.$route.query.name;
+    this.user_id = this.$route.query.id;
+    let data = await this.api.get("user/goods", {
+      user_id: this.user_id,
+      page: 1
+    });
+    if (data.status >= 200 && data.status < 300) {
+      data = data.data;
+      this.hisSelling_has_next = data.has_next;
+      this.hisSelling_next_num = data.next_num;
+      this.hisSelling = data.items;
+    }
+    data = await this.api.get("user/orders", {
+      user_id: this.user_id,
+      page: 1
+    });
+    if (data.status >= 200 && data.status < 300) {
+      data = data.data;
+      this.hisSold_has_next = data.has_next;
+      this.hisSold_next_num = data.next_num;
+      this.hisSold = data.items;
     }
   },
   methods: {
@@ -214,19 +149,47 @@ export default {
       this.$notify({ type: "success", message: "跳转成功" + index });
       this.$router.push("/myinfo");
     },
-    onLoad() {
-      // 异步更新数据
-      setTimeout(() => {
-        // for (let i = 0; i < 10; i++) {
-        //   this.list.push(this.list.length + 1);
-        // }
-        // // 加载状态结束
-        this.loading = false;
-        // 数据全部加载完成
-        // if (this.list.length >= 40) {
-        this.finished = true;
-        // }
-      }, 500);
+    onLoadSelling() {
+      this.getMoreHisSelling();
+    },
+    onLoadSold() {
+      this.getMoreHisSold();
+    },
+    async getMoreHisSelling() {
+      if (this.hisSelling_has_next == true) {
+        let data = await this.api.get("user/goods", {
+          user_id: this.user_id,
+          page: this.hisSelling_next_num
+        });
+        if (data.status >= 200 && data.status < 300) {
+          data = data.data;
+          this.hisSelling_has_next = data.has_next;
+          this.hisSelling_next_num = data.next_num;
+          this.hisSelling = this.hisSelling.concat(data.items);
+        }
+        this.hisSelling_loading = false;
+      } else {
+        this.hisSold_finished = true;
+        this.hisSelling_loading = false;
+      }
+    },
+    async getMoreHisSold() {
+      if (this.hisSold_has_next == true) {
+        let data = await this.api.get("user/orders", {
+          user_id: this.user_id,
+          page: this.hisSold_next_num
+        });
+        if (data.status >= 200 && data.status < 300) {
+          data = data.data;
+          this.hisSold_has_next = data.has_next;
+          this.hisSold_next_num = data.next_num;
+          this.hisSold = this.hisSold.concat(data.items);
+        }
+        this.hisSold_loading = false;
+      } else {
+        this.hisSold_finished = true;
+        this.hisSelling_loading = false;
+      }
     }
   }
 };
@@ -247,5 +210,14 @@ export default {
   background-color: rgb(233, 233, 233);
   opacity: 0.7;
   border-radius: 15px;
+}
+.order-css {
+  overflow: hidden;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(238, 189, 125);
+  border-radius: 10px;
+  margin: 5px;
+  background-color: white;
 }
 </style>

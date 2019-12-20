@@ -46,7 +46,6 @@ export default {
         username: this.account,
         password: this.password
       });
-      console.log(data);
       if (data.status >= 200 && data.status < 300) {
         sessionStorage.setItem("Authorization", data.data.Authorization);
         this.$notify({
