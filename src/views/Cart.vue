@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div style="background-color: orange">
+    <div>
       <van-nav-bar title="购物车" />
-      <van-list style="padding-bottom:30%;">
+      <van-list style="padding-bottom:30%;" v-if="list.length != 0">
         <van-list class="order-css" v-for="(item, index) in list" :key="item.name">
           <div class="shop">
             <van-image round width="2rem" height="2rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
@@ -25,17 +25,10 @@
               @on-change="getCart(index, idx, $event)"
               slot="footer"
             ></Checkbox>
-            <!-- <van-checkbox
-              :id="item.name + '-' + index"
-              v-bind:value="getCart"
-              v-on:change="getCart"
-              slot="footer"
-              style="position: relative; left: 95%;"
-              @click="getCart"
-            ></van-checkbox>-->
           </van-card>
         </van-list>
       </van-list>
+      <div v-else style="padding:15% 25%; font-size: 22px; text-align: center;">购物车空空的<br/>快去逛逛吧~</div>
     </div>
     <div>
       <div class="footer">

@@ -6,13 +6,13 @@
         <van-col span="5" style="margin-left:8px;">
           <van-image round width="4rem" height="4rem" src="../assets/hime.jpg" />
         </van-col>
-        <van-col span="8" v-if="modify">
+        <van-col span="8" v-if="modify" style="margin-left: 15px; padding-top: 20px">
           <div>
             <van-icon name="edit" size="1.5em" color="blue" style="float:right;" v-on:click="edit" />
             <h3>{{username}}</h3>
           </div>
         </van-col>
-        <van-col span="15" v-else>
+        <van-col span="15" v-else style="padding-top: 5px">
           <div>
             <van-field v-model="name" center clearable>
               <van-button slot="button" size="small" @click="modifyName">确认</van-button>
@@ -27,7 +27,6 @@
     <div class="orders" style="text-align:center">
       <van-row type="flex" justify="space-between">
         <van-col span="7">我的订单</van-col>
-        <van-col span="8" style="color:gray;margin-right:10px;">查看全部订单></van-col>
       </van-row>
       <van-grid class="order-icon-color" :column-num="3">
         <van-grid-item icon="send-gift-o" text="待发货" to="/notsent" />
@@ -39,7 +38,7 @@
     <!-- 用户自己上传发布的商品 -->
     <div class="goods">
       <van-row type="flex" justify="space-between">
-        <van-col span="8">我的商品</van-col>
+        <van-col span="8" style="font-weight: bold; margin-left: 5%">我的商品</van-col>
       </van-row>
       <van-cell
         class="goods-icon-color"

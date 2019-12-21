@@ -4,7 +4,7 @@
     :finished="finished"
     finished-text="没有更多了"
     @load="onLoad"
-    style="padding-bottom: 15%; background: blanchedalmond;"
+    style="padding-bottom: 15%; background: ghostwhite;"
   >
     <div class="container" ref="content">
       <div class="col">
