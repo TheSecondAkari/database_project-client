@@ -44,8 +44,8 @@ const store = new Vuex.Store({
 
     },
     getters: {
-        UserName: state => {
-            return state.user.name;
+        User: state => {
+            return state.user;
         },
         AddressList: state => {
             return state.addressList;

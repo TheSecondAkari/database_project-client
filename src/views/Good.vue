@@ -32,8 +32,18 @@
       <van-goods-action>
         <van-goods-action-icon icon="chat-o" text="客服" />
         <van-goods-action-icon icon="cart-o" text="购物车" @click="onClickIcon" />
-        <van-goods-action-button type="warning" text="加入购物车" @click="onAdd" :disabled="Boolean(good.sale)"/>
-        <van-goods-action-button type="danger" text="立即购买" @click="goToOrder" :disabled="Boolean(good.sale)"/>
+        <van-goods-action-button
+          type="warning"
+          text="加入购物车"
+          @click="onAdd"
+          :disabled="Boolean(good.sale)"
+        />
+        <van-goods-action-button
+          type="danger"
+          text="立即购买"
+          @click="goToOrder"
+          :disabled="Boolean(good.sale)"
+        />
       </van-goods-action>
     </div>
   </div>
@@ -68,9 +78,9 @@ export default {
       let data = JSON.stringify([good]);
       this.$router.push({
         path: "/order",
-        query:{
+        query: {
           type: 2,
-          goods: data,
+          goods: data
         }
       });
     },
@@ -84,21 +94,21 @@ export default {
     },
 
     onAdd: function() {
-      this.$toast("添加成功！")
-      this.$store.commit("addCart", this.good)
+      this.$toast("添加成功！");
+      this.$store.commit("addCart", this.good);
     },
 
-    goToSeller(){
-        var name = this.good.vendor.name
-        var id = this.good.vendor.id
-        this.$router.push({
-            path: "/seller",
-            query: {
-                name: name,
-                id: id,
-            }
-        })
-}
+    goToSeller() {
+      var name = this.good.vendor.name;
+      var id = this.good.vendor.id;
+      this.$router.push({
+        path: "/seller",
+        query: {
+          name: name,
+          id: id
+        }
+      });
+    }
   }
 };
 </script>

@@ -97,5 +97,12 @@ const routers = [
         },
         component: (resolve) => require(['../views/Order.vue'], resolve),
     },
+    {
+        path: '/search',
+        meta:{
+            title: '搜索页面'
+        },
+        component: (resolve) => require(['../views/Search.vue'], resolve),
+    },
 ];
 export default routers;

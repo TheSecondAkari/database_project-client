@@ -52,7 +52,12 @@ export default {
       }
     },
     onSearch: function() {
-      this.value = "";
+      this.$router.push({
+        path: "/search",
+        query: {
+          s: this.value
+        }
+      });
     }
   },
   components: {

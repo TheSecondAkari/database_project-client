@@ -172,7 +172,7 @@ export default {
         }
         this.hisSelling_loading = false;
       } else {
-        this.hisSold_finished = true;
+        this.hisSelling_finished = true;
         this.hisSelling_loading = false;
       }
     },

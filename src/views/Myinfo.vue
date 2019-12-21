@@ -118,10 +118,12 @@ export default {
       return this.$store.getters.MySold;
     },
     username() {
-      return this.$store.getters.UserName;
+      var user = this.$store.getters.User;
+      return user.name;
     },
     logon() {
-      if (this.$store.state.user.id > 0) {
+      var user = this.$store.getters.User;
+      if (user.id > 0) {
         return true;
       } else return false;
     }
