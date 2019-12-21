@@ -4157,3 +4157,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+.addressList{
+    text-align: center;
+}
+</style>

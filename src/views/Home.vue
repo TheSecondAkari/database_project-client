@@ -89,16 +89,21 @@ export default {
       }
     },
     onSearch: function() {
-      this.value = "";
+      this.$router.push({
+        path: "/search",
+        query: {
+          s: this.value
+        }
+      });
     },
     more() {
       this.show = true;
     },
     async onChange(index) {
       this.menuList = [];
-      let data = await this.api.get("/goods/index",{
+      let data = await this.api.get("/goods/index", {
         category_id: index
-      })
+      });
       this.menuList = data.data;
     }
   },

@@ -70,7 +70,8 @@ export default {
       return price;
     }
   },
-  mounted() {
+  async mounted() {
+    await this.Judge();
     var type = this.$route.query.type;
     switch (type) {
       case 0:
@@ -83,12 +84,27 @@ export default {
       case 2:
         this.list = JSON.parse(this.$route.query.goods);
         this.goods = this.list[0].goods;
-        console.log(this.list)
-        console.log(this.goods)
         break;
     }
   },
   methods: {
+    Judge() {
+      var user = this.$store.getters.User;
+      if (user.id < 1) {
+        this.$notify({
+          type: "danger",
+          message: "未登录，请先登陆。"
+        });
+        this.$router.push("/login");
+      } else if (this.$store.getters.AddressList.length == 0) {
+        console.log(this.$store.getters.AddressList);
+        this.$notify({
+          type: "danger",
+          message: "地址为空，请先添加地址。"
+        });
+        this.$router.push("/addressList");
+      }
+    },
     Back() {
       this.$router.push("/");
     },

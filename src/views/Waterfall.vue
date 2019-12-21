@@ -8,7 +8,7 @@
   >
     <div class="container" ref="content">
       <div class="col">
-        <div class="card" v-for="item in imgsList1" :key="item.id" v-on:click="reDirect($event)" :id="item.id">
+        <div class="card" v-for="item in imgsList1" :key="item.id" v-on:click="reDirect(item,$event)" :id="item.id">
           <van-image :src="item.img" style="width: 100%; display: block" />
           <div class="detail">
             <div class="title">{{item.name}}</div>
@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="col">
-        <div class="card" v-for="item in imgsList2" :key="item.id" v-on:click="reDirect($event)" :id="item.id">
+        <div class="card" v-for="item in imgsList2" :key="item.id" v-on:click="reDirect(item,$event)" :id="item.id">
           <van-image :src="item.img" style="width: 100%; display: block" />
           <div class="detail">
             <div class="title">{{item.name}}</div>
@@ -82,17 +82,10 @@ export default {
       this.imgsList2 = this.imgsList2.concat(imgsList2);
       this.index = this.index + 1;
     },
-    async reDirect(e){
-      var id = parseInt(e.currentTarget.id)
+    async reDirect(item){
       await this.api.get('/goods/view', {
-        id: id
+        id: item.id
       })
-      var item = undefined;
-      this.imgs.forEach(element => {
-        if(element.id == id){
-          item = element
-        }
-      });
       this.$router.push({
         path: "/good",
         query: {
