@@ -32,19 +32,17 @@
             @load="onLoadSelling"
           >
             <van-card
-              v-for="(item,index) in hisSelling"
+              v-for="item in hisSelling"
               :key="item.id"
               num="1"
               :price="item.price"
               :desc="item.detail"
               :title="item.name"
               :thumb="item.img"
+              v-on:click="reDirect(item,$event)"
             >
               <div slot="tags">
                 <van-tag plain type="danger">{{item.category.name}}</van-tag>
-              </div>
-              <div slot="footer">
-                <van-button size="mini" type="danger" @click="jumpToGood(index)">查看</van-button>
               </div>
             </van-card>
           </van-list>
@@ -147,9 +145,16 @@ export default {
     }
   },
   methods: {
-    jumpToGood(index) {
-      this.$notify({ type: "success", message: "跳转成功" + index });
-      this.$router.push("/myinfo");
+    async reDirect(item){
+      await this.api.get('/goods/view', {
+        id: item.id
+      })
+      this.$router.push({
+        path: "/good",
+        query: {
+          good: item,
+        }
+      });
     },
     onLoadSelling() {
       this.getMoreHisSelling();
