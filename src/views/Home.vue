@@ -1,36 +1,51 @@
 <template>
   <div style="background: ghostwhite">
-    <van-search v-model="value" placeholder="请输入搜索关键词" show-action shape="round" @search="onSearch">
-      <div slot="action" @click="onSearch">搜索</div>
-    </van-search>
-    <div style="position: relative">
-      <van-tabs v-model="active" swipeable @change="onChange">
-        <van-tab v-for="(item, index) in type" :title="item" :key="index"></van-tab>
-      </van-tabs>
-      <div class="more">
-        <van-icon name="ellipsis" size="25px" @click="more" />
-      </div>
-    </div>
-    <van-popup v-model="show" position="left" style>
-      <van-sidebar v-model="active" @change="onChange">
-        <van-sidebar-item v-for="(item, index) in type" :title="item" :key="index" />
-      </van-sidebar>
-    </van-popup>
-    <div class="image-swiper" v-if="active == 0">
-      <van-swipe
-        :autoplay="3000"
-        indicator-color="white"
-        style="border-radius: 15px; overflow: hidden;"
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <van-search
+        v-model="value"
+        placeholder="请输入搜索关键词"
+        show-action
+        shape="round"
+        @search="onSearch"
       >
-        <van-swipe-item class="image" v-for="item in list" :key="item">{{item}}</van-swipe-item>
-      </van-swipe>
-    </div>
-    <waterfall :imgsArr="menuList" v-if="menuList.length > 0" />
-    <van-tabbar v-model="active_tag" style="position: fixed; bottom: 0px;">
-      <van-tabbar-item icon="home-o" to="/">主页</van-tabbar-item>
-      <van-tabbar-item icon="cart-o" to="/cart">购物车</van-tabbar-item>
-      <van-tabbar-item icon="user-o" to="/myinfo">我的</van-tabbar-item>
-    </van-tabbar>
+        <div slot="action" @click="onSearch">搜索</div>
+      </van-search>
+      <div style="position: relative">
+        <van-tabs v-model="active" swipeable @change="onChange">
+          <van-tab v-for="(item, index) in type" :title="item" :key="index"></van-tab>
+        </van-tabs>
+        <div class="more">
+          <van-icon name="ellipsis" size="25px" @click="more" />
+        </div>
+      </div>
+      <van-popup v-model="show" position="left" style>
+        <van-sidebar v-model="active" @change="onChange">
+          <van-sidebar-item v-for="(item, index) in type" :title="item" :key="index" />
+        </van-sidebar>
+      </van-popup>
+      <div class="image-swiper" v-if="active == 0">
+        <van-swipe
+          :autoplay="4000"
+          indicator-color="white"
+          style="border-radius: 15px; overflow: hidden;"
+        >
+          <van-swipe-item
+            class="image"
+            v-for="item in list"
+            :key="item.id"
+            v-on:click="reDirect(item,$event)"
+          >
+            <img :src="item.img" style="height: 156px; width:100%;" />
+          </van-swipe-item>
+        </van-swipe>
+      </div>
+      <waterfall style="margin-top:25px" :imgsArr="menuList" v-if="menuList.length > 0" />
+      <van-tabbar v-model="active_tag" style="position: fixed; bottom: 0px;">
+        <van-tabbar-item icon="home-o" to="/">主页</van-tabbar-item>
+        <van-tabbar-item icon="cart-o" to="/cart">购物车</van-tabbar-item>
+        <van-tabbar-item icon="user-o" to="/myinfo">我的</van-tabbar-item>
+      </van-tabbar>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -42,10 +57,10 @@ export default {
     return {
       value: "",
       show: false,
+      isLoading: false,
       active: 0,
       active_tag: 0,
       list: [],
-      mainMenuList: [],
       menuList: [],
       type: [
         "全部",
@@ -76,16 +91,34 @@ export default {
     this.getGood();
   },
   methods: {
+    async onRefresh() {
+      this.isLoading = true;
+      this.menuList = [];
+      let data = await this.api.get("/goods/index", {
+        category_id: this.active
+      });
+      if (this.active == 0) {
+        this.list = data.data.slice(0, 4);
+        this.menuList = data.data.slice(4, -1);
+        this.$store.commit("setMainMenu", data.data);
+        this.isLoading = false;
+        return;
+      }
+      this.menuList = data.data;
+      this.isLoading = false;
+      this.$toast("刷新成功");
+    },
     async getGood() {
       var list = this.$store.getters.MainMenu;
       if (list.length == 0) {
         let data = await this.api.get("/goods/index");
-        this.mainMenuList = data.data;
-        this.menuList = data.data;
+        this.list = data.data.slice(0, 4);
+        this.menuList = data.data.slice(4, -1);
+        console.log(this.list);
         this.$store.commit("setMainMenu", data.data);
       } else {
-        this.mainMenuList = list;
-        this.menuList = list;
+        this.list = list.slice(0, 4);
+        this.menuList = list.slice(4, -1);
       }
     },
     onSearch: function() {
@@ -104,7 +137,23 @@ export default {
       let data = await this.api.get("/goods/index", {
         category_id: index
       });
-      this.menuList = data.data;
+      if (index == 0) {
+        this.list = data.data.slice(0, 4);
+        this.menuList = data.data.slice(4, -1);
+      } else {
+        this.menuList = data.data;
+      }
+    },
+    async reDirect(item) {
+      await this.api.get("/goods/view", {
+        id: item.id
+      });
+      this.$router.push({
+        path: "/good",
+        query: {
+          good: item
+        }
+      });
     }
   },
   components: {
@@ -121,8 +170,7 @@ export default {
 }
 .image {
   text-align: center;
-  line-height: 150px;
-  background: blanchedalmond;
+  height: 150px;
 }
 .more {
   position: absolute;
