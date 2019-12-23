@@ -16,7 +16,7 @@
         <van-sidebar-item v-for="(item, index) in type" :title="item" :key="index" />
       </van-sidebar>
     </van-popup>
-    <div class="image-swiper">
+    <div class="image-swiper" v-if="active == 0">
       <van-swipe
         :autoplay="3000"
         indicator-color="white"
@@ -44,7 +44,7 @@ export default {
       show: false,
       active: 0,
       active_tag: 0,
-      list: [1, 2, 3, 4],
+      list: [],
       mainMenuList: [],
       menuList: [],
       type: [
@@ -77,12 +77,12 @@ export default {
   },
   methods: {
     async getGood() {
-      var list = this.$store.getters.MainMeau;
+      var list = this.$store.getters.MainMenu;
       if (list.length == 0) {
         let data = await this.api.get("/goods/index");
         this.mainMenuList = data.data;
         this.menuList = data.data;
-        this.$store.commit("setMainMeau", data.data);
+        this.$store.commit("setMainMenu", data.data);
       } else {
         this.mainMenuList = list;
         this.menuList = list;
