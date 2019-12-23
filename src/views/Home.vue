@@ -96,7 +96,6 @@ export default {
     },
     async getGood() {
       var list = this.$store.getters.MainMeau;
-      console.log(list);
       if (list.length == 0) {
         let data = await this.api.get("/goods/index");
         this.menuList = data.data;
