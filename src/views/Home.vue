@@ -109,7 +109,11 @@ export default {
       this.$toast("刷新成功");
     },
     async getGood() {
+<<<<<<< HEAD
       var list = this.$store.getters.MainMenu;
+=======
+      var list = this.$store.getters.MainMeau;
+>>>>>>> 93107840df528fed36a87eadf57f37a415306a20
       if (list.length == 0) {
         let data = await this.api.get("/goods/index");
         this.list = data.data.slice(0, 4);

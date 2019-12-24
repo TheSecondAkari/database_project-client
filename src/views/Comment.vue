@@ -45,18 +45,6 @@
           <p>下单时间：{{item.created_at}}</p>
           <p>订单号：{{item.order_number}}</p>
         </div>
-        <van-button
-          v-if="item.comment == null"
-          plain
-          size="small"
-          type="info"
-          round
-          style="margin:0px 2.5% 2.5% 75%;"
-          @click="comment"
-        >评价</van-button>
-
-        <van-cell v-else title="评价" :label="item.comment.content" />
-
         <van-popup v-model="show" position="bottom" autosize>
           <van-field
             v-model="message"
@@ -73,9 +61,19 @@
             round
             style="margin-left: 55%"
             type="info"
-            @click="comfirm(item.id)"
+            @click="comfirm()"
           >确认发布</van-button>
         </van-popup>
+        <van-button
+          v-if="item.comment == null"
+          plain
+          size="small"
+          type="info"
+          round
+          style="margin:0px 2.5% 2.5% 75%;"
+          @click="comment(item.id)"
+        >评价</van-button>
+        <van-cell v-else title="评价" :label="item.comment.content" />
       </van-list>
     </van-list>
   </div>
@@ -86,6 +84,7 @@ export default {
   name: "notSent",
   data() {
     return {
+      comment_id: 0,
       show: false,
       finished: false,
       message: ""
@@ -105,16 +104,17 @@ export default {
     }
   },
   methods: {
-    comment() {
+    comment(id) {
+      this.comment_id = id;
       this.show = true;
     },
     clean() {
       this.message = "";
     },
-    async comfirm(id) {
+    async comfirm() {
       if (this.message == "") this.message = "评论为空，默认好评";
       let data = await this.api.post("/comment", {
-        order_id: id,
+        order_id: this.comment_id,
         content: this.message
       });
       if (data.status >= 200 && data.status < 300) {
@@ -125,13 +125,13 @@ export default {
         this.$store.commit("getTaken");
       }
       this.message = "";
+      this.comment_id = 0;
       this.show = false;
     },
     onLoad() {
       this.$store.commit("getMoreTaken");
       if (this.$store.state.taken_has_next == false) this.finished = true;
-    },
-
+    }
   }
 };
 </script>
