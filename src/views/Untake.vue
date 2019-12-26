@@ -103,7 +103,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .notSentOrders {
-  background-color: rgb(252, 196, 76);
+  background-color: ghostwhite;
   /* min-height: 670px; */
 }
 .card {
@@ -113,7 +113,7 @@ export default {
   overflow: hidden;
   border-width: 1px;
   border-style: solid;
-  border-color: rgb(238, 189, 125);
+  border-color: ghostwhite;
   border-radius: 10px;
   margin: 5px;
   background-color: white;

@@ -278,7 +278,7 @@ export default {
   overflow: hidden;
   border-width: 1px;
   border-style: solid;
-  border-color: rgb(238, 189, 125);
+  border-color: ghostwhite;
   border-radius: 10px;
   background-color: white;
   margin: 5px 0px 5px 0px;
@@ -291,6 +291,6 @@ export default {
   flex-direction: row;
 }
 .mysold {
-  background-color: rgb(252, 196, 76);
+  background-color: ghostwhite;
 }
 </style>
