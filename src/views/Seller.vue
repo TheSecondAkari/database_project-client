@@ -16,7 +16,7 @@
             height="100px"
             src="https://img.yzcdn.cn/vant/cat.jpeg"
           />
-          <h1>{{userName}}</h1>
+          <h1 style="margin-top:5%">{{userName}}</h1>
         </van-cell>
       </van-cell-group>
       <!-- <van-skeleton :title="true" avatar avatar-size="64px" avatar-shape="squard" :row="3" /> -->

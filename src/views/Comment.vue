@@ -162,15 +162,4 @@ export default {
   flex-direction: row;
 }
 
-/* .info {
-  margin-top: 2.5%;
-  margin-left: 5%;
-  word-wrap: break-word;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  font-size: 14px;
-} */
 </style>
