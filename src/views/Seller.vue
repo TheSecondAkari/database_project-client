@@ -211,15 +211,16 @@ export default {
 }
 .van-card {
   border-style: solid;
-  border-width: 3px;
+  margin: 1px 5px 1px 5px;
+  border-width: 1px;
   border-color: #fafaface;
-  border-radius: 15px;
+  border-radius: 10px;
   background-color: #fafafa28;
 }
 .comment {
   background-color: rgb(233, 233, 233);
   opacity: 0.7;
-  border-radius: 15px;
+  border-radius: 10px;
 }
 .order-css {
   overflow: hidden;
