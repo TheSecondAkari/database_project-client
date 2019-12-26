@@ -97,7 +97,6 @@ export default {
         });
         this.$router.push("/login");
       } else if (this.$store.getters.AddressList.length == 0) {
-        console.log(this.$store.getters.AddressList);
         this.$notify({
           type: "danger",
           message: "地址为空，请先添加地址。"

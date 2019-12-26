@@ -140,7 +140,6 @@ export default {
       data = data.data;
       this.hisSold_has_next = data.has_next;
       this.hisSold_next_num = data.next_num;
-      console.log(this.hisSold_has_next,this.hisSold_next_num)
       this.hisSold = data.items;
     }
   },
